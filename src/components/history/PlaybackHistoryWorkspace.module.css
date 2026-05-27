@@ -1,33 +1,23 @@
 .page {
   display: grid;
-  gap: 1rem;
+  gap: 1.05rem;
 }
 
 .hero,
 .historyRow,
 .empty {
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--paper) 86%, transparent);
-  box-shadow: var(--shadow);
+  background: var(--app-surface);
+  box-shadow: var(--app-surface-shadow);
 }
 
 .hero {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 1rem;
   align-items: center;
-  border-radius: 1.35rem;
-  padding: 1rem;
-}
-
-.heroIcon {
-  width: 3.3rem;
-  height: 3.3rem;
-  display: grid;
-  place-items: center;
-  border-radius: 1.05rem;
-  background: linear-gradient(180deg, #1b1918, #0f0e0e);
-  color: white;
+  border-radius: 1.55rem;
+  padding: 1.08rem;
 }
 
 .heroCopy {
@@ -53,8 +43,8 @@
 }
 
 .hero h1 {
-  font-size: clamp(2rem, 4vw, 3.4rem);
-  line-height: 0.95;
+  font-size: clamp(2.2rem, 4vw, 3.7rem);
+  line-height: 0.92;
 }
 
 .hero p,
@@ -95,16 +85,14 @@
   grid-template-columns: 4.4rem minmax(0, 1fr) auto;
   gap: 0.85rem;
   align-items: center;
-  border-radius: 1.15rem;
-  padding: 0.64rem;
+  border-radius: 1.22rem;
+  padding: 0.68rem;
   overflow: hidden;
 }
 
 .activeRow {
   border-color: color-mix(in srgb, var(--accent) 48%, var(--line));
-  background:
-    radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 14%, transparent), transparent 58%),
-    color-mix(in srgb, var(--paper) 88%, transparent);
+  background: var(--app-surface);
 }
 
 .coverButton {
@@ -183,17 +171,6 @@
   padding: 0 0.84rem;
 }
 
-.index {
-  position: absolute;
-  right: 0.72rem;
-  top: 0.5rem;
-  color: color-mix(in srgb, var(--muted) 42%, transparent);
-  font-family: var(--font-space-grotesk), sans-serif;
-  font-size: 1.3rem;
-  font-weight: 900;
-  pointer-events: none;
-}
-
 .empty {
   display: grid;
   justify-items: start;
@@ -214,23 +191,13 @@
 :global(html[data-theme="dark"]) .hero,
 :global(html[data-theme="dark"]) .historyRow,
 :global(html[data-theme="dark"]) .empty {
-  background: color-mix(in srgb, var(--paper) 84%, transparent);
-}
-
-:global(html[data-theme="dark"]) .heroIcon {
-  background: linear-gradient(180deg, rgba(245, 242, 234, 0.96), rgba(215, 208, 194, 0.94));
-  color: #171516;
+  background: var(--app-surface);
 }
 
 @media (max-width: 640px) {
   .hero {
     grid-template-columns: 1fr;
     padding: 0.95rem;
-  }
-
-  .heroIcon {
-    width: 2.9rem;
-    height: 2.9rem;
   }
 
   .clearButton {
@@ -252,7 +219,4 @@
     grid-column: 1 / -1;
   }
 
-  .index {
-    display: none;
-  }
 }

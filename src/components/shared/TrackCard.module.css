@@ -3,13 +3,16 @@
   content-visibility: auto;
   contain-intrinsic-size: 320px;
   border: 1px solid var(--line);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(255, 250, 241, 0.92));
-  border-radius: 1.45rem;
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent-soft) 82%, transparent), transparent 38%),
+    var(--panel-elevated);
+  border-radius: 1.55rem;
   overflow: hidden;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-soft);
   transition:
     transform 180ms ease,
-    box-shadow 180ms ease;
+    box-shadow 180ms ease,
+    border-color 180ms ease;
 }
 
 .activeTrack {
@@ -48,24 +51,26 @@
 
 .discoverCard {
   contain-intrinsic-size: 236px;
-  border-radius: 1.24rem;
+  border-radius: 1.3rem;
   width: 100%;
   max-width: none;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(255, 250, 241, 0.95));
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent-soft) 88%, transparent), transparent 42%),
+    linear-gradient(180deg, color-mix(in srgb, var(--paper-strong) 96%, transparent), color-mix(in srgb, var(--paper) 88%, transparent));
   box-shadow: none;
 }
 
 .likedRow {
-  border-radius: 0.98rem;
-  background: rgba(255, 255, 255, 0.62);
+  border-radius: 1.05rem;
+  background: color-mix(in srgb, var(--paper-strong) 88%, transparent);
   box-shadow: none;
-  border-color: rgba(23, 21, 22, 0.06);
+  border-color: color-mix(in srgb, var(--line) 78%, transparent);
 }
 
 .likedRow .coverWrap {
   aspect-ratio: 0.82 / 1;
   min-height: auto;
-  background: rgba(227, 218, 204, 0.72);
+  background: var(--media-slot-surface);
 }
 
 .likedRow .playButton {
@@ -127,7 +132,7 @@
   place-items: center;
   font-family: var(--font-space-grotesk), sans-serif;
   font-size: 2rem;
-  color: #5b554f;
+  color: color-mix(in srgb, var(--ink) 72%, transparent);
 }
 
 .playButton {
@@ -141,10 +146,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(10, 12, 15, 0.9);
-  color: white;
+  background: var(--control-strong-bg);
+  color: var(--control-strong-text);
   cursor: pointer;
-  box-shadow: 0 12px 28px rgba(11, 14, 18, 0.18);
+  box-shadow: 0 14px 30px var(--control-strong-shadow);
 }
 
 .body {
@@ -172,7 +177,7 @@
 
 .name {
   margin: 0;
-  font-weight: 700;
+  font-weight: 800;
   font-size: 1.02rem;
   letter-spacing: -0.03em;
   line-height: 1.05;
@@ -252,7 +257,9 @@
 :global(html[data-theme="dark"]) .row,
 :global(html[data-theme="dark"]) .discoverCard,
 :global(html[data-theme="dark"]) .likedRow {
-  background: linear-gradient(180deg, rgba(25, 28, 33, 0.88), rgba(14, 16, 20, 0.94));
+  background:
+    radial-gradient(circle at top right, color-mix(in srgb, var(--accent-soft) 56%, transparent), transparent 38%),
+    var(--panel-elevated);
   border-color: rgba(255, 255, 255, 0.1);
   color: var(--ink);
 }
@@ -275,7 +282,8 @@
   .card:hover,
   .row:hover {
     transform: translateY(-2px);
-    box-shadow: 0 24px 70px rgba(17, 21, 27, 0.1);
+    box-shadow: 0 24px 70px rgba(17, 21, 27, 0.12);
+    border-color: color-mix(in srgb, var(--accent) 22%, var(--line));
   }
 
   .card:hover .cover,
@@ -470,7 +478,7 @@
     font-size: 0.76rem;
     font-weight: 600;
     line-height: 1;
-    color: #4f4944;
+    color: var(--muted);
     white-space: nowrap;
     width: auto;
     min-width: auto;

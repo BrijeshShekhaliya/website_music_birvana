@@ -1,14 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { ListMusic, Music2, Upload } from "lucide-react";
+import { Music2, Upload } from "lucide-react";
 import { usePathname } from "next/navigation";
 import styles from "./StudioNav.module.css";
 
 const studioLinks = [
   { href: "/studio/upload", label: "Upload", icon: Upload },
   { href: "/studio/tracks", label: "Tracks", icon: Music2 },
-  { href: "/studio/playlists", label: "Playlists", icon: ListMusic },
 ];
 
 export function StudioNav() {

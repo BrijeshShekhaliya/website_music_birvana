@@ -1,11 +1,11 @@
 .panel {
   display: grid;
   gap: 1.15rem;
-  padding: 0.2rem 0 0;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  padding: 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 1.65rem;
+  background: var(--app-surface);
+  box-shadow: var(--app-surface-shadow);
 }
 
 .header {
@@ -29,8 +29,8 @@
 .title {
   margin: 0;
   font-family: var(--font-space-grotesk), sans-serif;
-  font-size: clamp(1.7rem, 2.2vw, 2.5rem);
-  line-height: 0.96;
+  font-size: clamp(1.9rem, 2.2vw, 2.7rem);
+  line-height: 0.92;
   letter-spacing: -0.06em;
 }
 
@@ -55,8 +55,8 @@
   gap: 0.25rem;
   padding: 0.25rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.84);
-  border: 1px solid rgba(23, 21, 22, 0.08);
+  background: color-mix(in srgb, var(--paper-strong) 76%, transparent);
+  border: 1px solid var(--line);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.72);
 }
 
@@ -82,8 +82,9 @@
 }
 
 .toggleButtonActive {
-  background: var(--ink);
-  color: white;
+  background: var(--control-strong-bg);
+  color: var(--control-strong-text);
+  box-shadow: 0 12px 24px var(--control-strong-shadow);
 }
 
 .toggleCount {
@@ -110,14 +111,13 @@
   min-height: 2.7rem;
   padding: 0.65rem 1rem;
   border-radius: 999px;
-  border: 1px solid rgba(23, 21, 22, 0.08);
-  background: rgba(255, 255, 255, 0.84);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--paper-strong) 82%, transparent);
 }
 
 :global(html[data-theme="dark"]) .toggle,
 :global(html[data-theme="dark"]) .action {
   border-color: rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.08);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
 }
 
@@ -160,8 +160,7 @@
 @media (max-width: 640px) {
   .panel {
     gap: 0.9rem;
-    padding: 0.1rem 0 0;
-    box-shadow: none;
+    padding: 1rem;
   }
 
   .title {

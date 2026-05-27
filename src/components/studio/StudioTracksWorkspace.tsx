@@ -19,7 +19,7 @@ import { deleteTrackAction } from "@/app/actions";
 import { PlaylistModal } from "@/components/playlist/PlaylistModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { LazyImage } from "@/components/shared/LazyImage";
-import { compactNumber, formatDuration } from "@/lib/format";
+import { formatDuration } from "@/lib/format";
 import { evictCachedMedia, notifyTrackDeleted } from "@/lib/media/clientMediaCache";
 import type { Track } from "@/types/models";
 import { StudioTrackEditor } from "./StudioTrackEditor";
@@ -86,38 +86,22 @@ function StudioTrackRow({
             <h3 className={styles.title}>{track.title}</h3>
             <p className={styles.artist}>{track.artist_display}</p>
           </div>
-
-          <div className={styles.mobileMeta}>
-            <strong>{formatDuration(track.duration_seconds)}</strong>
-            <span>{statusMeta.label}</span>
-          </div>
-
-          <div className={styles.pills} aria-label="Track details">
-            <span className={styles.pill}>
+          <p className={styles.metaLine}>
+            <span>{formatDuration(track.duration_seconds)}</span>
+            <span>
               {track.visibility === "public" ? <Globe2 size={14} /> : null}
               {track.visibility === "unlisted" ? <Radio size={14} /> : null}
               {track.visibility === "private" ? <LockKeyhole size={14} /> : null}
-              <span>{track.visibility === "public" ? "Public" : track.visibility === "unlisted" ? "Unlisted" : "Private"}</span>
+              {track.visibility === "public" ? "Public" : track.visibility === "unlisted" ? "Unlisted" : "Private"}
             </span>
-            <span className={`${styles.pill} ${statusMeta.className}`}>
+            <span className={statusMeta.className}>
               {statusMeta.kind === "ready" ? <CheckCircle2 size={14} /> : null}
               {statusMeta.kind === "processing" ? <Clock3 size={14} /> : null}
               {statusMeta.kind === "failed" ? <XCircle size={14} /> : null}
               {statusMeta.kind === "uploading" ? <Waves size={14} /> : null}
-              <span>{statusMeta.label}</span>
+              {statusMeta.label}
             </span>
-          </div>
-        </div>
-
-        <div className={styles.metrics}>
-          <div>
-            <span className={styles.metricLabel}>Length</span>
-            <strong>{formatDuration(track.duration_seconds)}</strong>
-          </div>
-          <div>
-            <span className={styles.metricLabel}>Plays</span>
-            <strong>{compactNumber(track.play_count)}</strong>
-          </div>
+          </p>
         </div>
 
         <div className={styles.rowActions}>
@@ -163,10 +147,6 @@ export function StudioTracksWorkspace({ tracks }: { tracks: Track[] }) {
     });
   }, [currentTracks, filter, query]);
 
-  const publicCount = currentTracks.filter((track) => track.visibility === "public").length;
-  const hiddenCount = currentTracks.length - publicCount;
-  const totalPlays = currentTracks.reduce((sum, track) => sum + (track.play_count ?? 0), 0);
-
   const handleDelete = () => {
     if (!deletingTrack) {
       return;
@@ -196,11 +176,8 @@ export function StudioTracksWorkspace({ tracks }: { tracks: Track[] }) {
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
           <p className={styles.eyebrow}>Studio tracks</p>
-          <h1 className={styles.heroTitle}>Keep every upload clean, visible, and easy to edit.</h1>
-          <p className={styles.heroText}>
-            Rename songs, adjust the artist credit, change artwork, and control who can listen
-            without touching the locked audio file.
-          </p>
+          <h1 className={styles.heroTitle}>Manage your uploaded tracks.</h1>
+          <p className={styles.heroText}>Edit details, artwork, and visibility in one place.</p>
         </div>
 
         <div className={styles.heroActions}>
@@ -211,36 +188,12 @@ export function StudioTracksWorkspace({ tracks }: { tracks: Track[] }) {
         </div>
       </section>
 
-      <section className={styles.overview}>
-        <div className={styles.statCard}>
-          <span className={styles.statLabel}>Tracks</span>
-          <strong className={styles.statValue}>{currentTracks.length}</strong>
-          <span className={styles.statMeta}>songs in your Studio catalog</span>
-        </div>
-        <div className={styles.statCard}>
-          <span className={styles.statLabel}>Public</span>
-          <strong className={styles.statValue}>{publicCount}</strong>
-          <span className={styles.statMeta}>live across discovery surfaces</span>
-        </div>
-        <div className={styles.statCard}>
-          <span className={styles.statLabel}>Hidden</span>
-          <strong className={styles.statValue}>{hiddenCount}</strong>
-          <span className={styles.statMeta}>private or unlisted songs</span>
-        </div>
-        <div className={styles.statCard}>
-          <span className={styles.statLabel}>Plays</span>
-          <strong className={styles.statValue}>{compactNumber(totalPlays)}</strong>
-          <span className={styles.statMeta}>across your uploaded tracks</span>
-        </div>
-      </section>
-
       <section className={styles.manager}>
         <div className={styles.managerHeader}>
           <div>
             <p className={styles.eyebrow}>Your uploads</p>
             <h2 className={styles.managerTitle}>Uploaded songs</h2>
           </div>
-          <p className={styles.managerMeta}>{filteredTracks.length} shown</p>
         </div>
 
         <div className={styles.toolbar}>
@@ -274,7 +227,7 @@ export function StudioTracksWorkspace({ tracks }: { tracks: Track[] }) {
               type="search"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search songs"
+              placeholder="Search tracks or artists"
               aria-label="Search songs"
             />
           </label>

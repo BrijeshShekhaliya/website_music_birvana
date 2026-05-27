@@ -12,21 +12,25 @@ import type { Track } from "@/types/models";
 export function TrackCard({
   track,
   tracks,
+  playbackTracks,
   index = 0,
   variant = "grid",
   initialLiked = false,
   showLikeButton = false,
   queueKey,
   eagerArtwork = false,
+  onPlayAttempt,
 }: {
   track: Track;
   tracks: Track[];
+  playbackTracks?: Track[];
   index?: number;
   variant?: "grid" | "row" | "discover" | "liked";
   initialLiked?: boolean;
   showLikeButton?: boolean;
   queueKey?: string;
   eagerArtwork?: boolean;
+  onPlayAttempt?: (track: Track) => boolean | Promise<boolean>;
 }) {
   const {
     currentTrack,
@@ -36,19 +40,28 @@ export function TrackCard({
     togglePlayback,
   } = usePlayerPlayback();
   const active = currentTrack?.id === track.id;
+  const resolvedPlaybackTracks = playbackTracks ?? tracks;
   const resolvedQueueKey = useMemo(
-    () => queueKey ?? `collection:${tracks.map((item) => item.id).join(",")}`,
-    [queueKey, tracks],
+    () => queueKey ?? `collection:${resolvedPlaybackTracks.map((item) => item.id).join(",")}`,
+    [queueKey, resolvedPlaybackTracks],
   );
   const sameQueue = activeQueueKey === resolvedQueueKey;
 
-  const handlePlay = () => {
+  const handlePlay = async () => {
+    if (onPlayAttempt) {
+      const allowed = await onPlayAttempt(track);
+
+      if (allowed === false) {
+        return;
+      }
+    }
+
     if (active && sameQueue) {
       togglePlayback();
       return;
     }
 
-    playTracks(tracks, index, resolvedQueueKey);
+    playTracks(resolvedPlaybackTracks, index, resolvedQueueKey);
   };
 
   const className =
@@ -85,7 +98,7 @@ export function TrackCard({
         ? `${styles.actions} ${styles.discoverActions}`
         : styles.actions;
   const showArtist = variant !== "liked";
-  const showPlayCount = variant !== "liked";
+  const showPlayCount = variant === "row";
 
   return (
     <article className={activeClassName} aria-current={active ? "true" : undefined}>

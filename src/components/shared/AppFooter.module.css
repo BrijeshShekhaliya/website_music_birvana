@@ -1,46 +1,100 @@
 .footer {
-  margin-top: 2rem;
-  border-top: 1px solid var(--line);
-  padding: 1.5rem 0 9rem;
-}
-
-.brandRow {
+  margin-top: 1.2rem;
   display: grid;
   gap: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 1.6rem;
+  background:
+    radial-gradient(circle at 82% 18%, color-mix(in srgb, var(--accent-soft) 92%, transparent), transparent 18rem),
+    linear-gradient(180deg, color-mix(in srgb, var(--paper-strong) 94%, transparent), color-mix(in srgb, var(--paper) 88%, transparent));
+  box-shadow: var(--app-surface-shadow);
+  padding: 1.15rem 1rem 8.9rem;
 }
 
-.brand {
+.brandRow,
+.links {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.brandBlock,
+.signalBlock {
+  display: grid;
+  gap: 0.32rem;
+}
+
+.brand,
+.signalLabel {
   margin: 0;
-  font-family: var(--font-space-grotesk), sans-serif;
-  font-size: 0.9rem;
-  letter-spacing: 0.32em;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
 }
 
+.signalLabel {
+  color: var(--muted);
+}
+
 .caption {
-  margin: 0.45rem 0 0;
+  margin: 0;
   max-width: 34ch;
   color: var(--muted);
   line-height: 1.6;
 }
 
+.signalTitle {
+  max-width: 36ch;
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: clamp(1.2rem, 4vw, 1.7rem);
+  line-height: 1.02;
+  letter-spacing: -0.05em;
+}
+
 .links {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.85rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .link {
-  color: var(--muted);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.7rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--paper-strong) 86%, transparent);
+  color: var(--muted-strong);
+  font-size: 0.84rem;
+  font-weight: 700;
 }
 
 @media (min-width: 960px) {
   .footer {
-    padding-bottom: 2rem;
+    padding: 1.3rem 1.25rem 1.3rem;
   }
 
   .brandRow {
-    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
     align-items: end;
   }
+
+  .links {
+    grid-template-columns: repeat(4, minmax(0, max-content));
+    justify-content: start;
+  }
+}
+
+@media (max-width: 719px) {
+  .footer {
+    padding: 0.95rem 0.9rem 8.4rem;
+    border-radius: 1.25rem;
+  }
+}
+
+:global(html[data-theme="dark"]) .footer,
+:global(html[data-theme="dark"]) .link {
+  background: var(--app-surface);
+  border-color: rgba(255, 255, 255, 0.1);
+  color: var(--ink);
 }

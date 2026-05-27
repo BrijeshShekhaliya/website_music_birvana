@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import { ensureProfileForUser } from "@/lib/auth/profile";
 import { getPublicSupabaseEnv, hasSupabaseEnv } from "@/lib/env";
 
 export async function POST(request: NextRequest) {
@@ -39,6 +40,18 @@ export async function POST(request: NextRequest) {
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 400 });
+  }
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (user) {
+    try {
+      await ensureProfileForUser(user);
+    } catch (profileError) {
+      console.error("Unable to initialize profile after password sign-in", profileError);
+    }
   }
 
   return response;

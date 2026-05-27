@@ -1,5 +1,6 @@
 const publicSupabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const publicSupabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const authOtpSecret = process.env.AUTH_OTP_SECRET;
 
 export function hasSupabaseEnv() {
   return Boolean(publicSupabaseUrl && publicSupabaseAnonKey);
@@ -13,6 +14,14 @@ export function hasR2Env() {
       process.env.R2_BUCKET &&
       process.env.R2_PUBLIC_BASE_URL,
   );
+}
+
+export function hasSmtpEnv() {
+  return Boolean(process.env.SMTP_USER && process.env.SMTP_PASS);
+}
+
+export function hasAuthOtpSecret() {
+  return Boolean(authOtpSecret);
 }
 
 export function getPublicSupabaseEnv() {

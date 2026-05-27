@@ -6,6 +6,23 @@
   padding: 0;
 }
 
+.compact {
+  grid-template-columns: 1fr;
+  gap: 0.9rem;
+}
+
+.compact .intro {
+  min-width: 0;
+}
+
+.compact .footer {
+  justify-content: stretch;
+}
+
+.compact .button {
+  width: 100%;
+}
+
 .intro {
   display: grid;
   gap: 0.22rem;

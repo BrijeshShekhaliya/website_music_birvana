@@ -1,6 +1,6 @@
 .page {
   display: grid;
-  gap: 1rem;
+  gap: 1.05rem;
 }
 
 .hero,
@@ -9,8 +9,8 @@
 .notice,
 .empty {
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--paper) 88%, transparent);
-  box-shadow: var(--shadow);
+  background: var(--app-surface);
+  box-shadow: var(--app-surface-shadow);
 }
 
 .hero {
@@ -18,21 +18,10 @@
   grid-template-columns: minmax(0, 1fr) auto;
   gap: 1rem;
   align-items: center;
-  border-radius: 1.45rem;
-  padding: 1.15rem;
+  border-radius: 1.7rem;
+  padding: 1.2rem;
   overflow: hidden;
   position: relative;
-}
-
-.hero::before {
-  content: "";
-  position: absolute;
-  inset: -35% -25% auto auto;
-  width: 18rem;
-  height: 18rem;
-  border-radius: 999px;
-  background: radial-gradient(circle, var(--accent-soft), transparent 68%);
-  pointer-events: none;
 }
 
 .identityBlock {
@@ -50,16 +39,16 @@
   display: grid;
   place-items: center;
   border: 1px solid color-mix(in srgb, var(--accent) 36%, var(--line));
-  border-radius: 1.55rem;
+  border-radius: 1.6rem;
   background:
     radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.28), transparent 34%),
     linear-gradient(135deg, #2a2623, #121111);
-  color: color-mix(in srgb, var(--accent) 68%, white);
+  color: #ffffff;
   font-family: var(--font-space-grotesk), sans-serif;
   font-size: 2rem;
   font-weight: 900;
   overflow: hidden;
-  box-shadow: 0 22px 48px color-mix(in srgb, var(--accent) 22%, transparent);
+  box-shadow: 0 18px 34px rgba(17, 21, 27, 0.14);
 }
 
 .avatar {
@@ -92,8 +81,8 @@
 
 .heroCopy h1 {
   margin-top: 0.18rem;
-  font-size: clamp(2.35rem, 7vw, 4.9rem);
-  line-height: 0.9;
+  font-size: clamp(2.5rem, 7vw, 5.2rem);
+  line-height: 0.88;
 }
 
 .heroCopy p,
@@ -128,7 +117,7 @@
 
 .badges span {
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--paper) 74%, transparent);
+  background: var(--app-surface-muted);
   color: var(--ink);
   padding: 0.48rem 0.68rem;
   font-size: 0.78rem;
@@ -147,7 +136,7 @@
 .secondaryAction,
 .textLink {
   min-height: 2.38rem;
-  padding: 0 0.78rem;
+  padding: 0 0.86rem;
   font-size: 0.88rem;
 }
 
@@ -162,7 +151,7 @@
 .secondaryAction,
 .textLink {
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--paper) 78%, transparent);
+  background: var(--app-surface-muted);
   color: var(--ink);
 }
 
@@ -194,9 +183,9 @@
 
 .statsStrip {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(10.5rem, 1fr));
   gap: 0.12rem;
-  border-radius: 1.18rem;
+  border-radius: 1.3rem;
   padding: 0.34rem;
 }
 
@@ -207,7 +196,7 @@
   border-radius: 0.9rem;
   padding: 0.74rem 0.82rem;
   min-width: 0;
-  background: color-mix(in srgb, var(--paper) 62%, transparent);
+  background: var(--app-surface-muted);
 }
 
 .statItem span,
@@ -244,7 +233,7 @@
 
 .panel,
 .empty {
-  border-radius: 1.25rem;
+  border-radius: 1.35rem;
   padding: 1rem;
 }
 
@@ -277,7 +266,7 @@
   overflow: hidden;
   border: 1px solid var(--line);
   border-radius: 1rem;
-  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  background: var(--app-surface-muted);
 }
 
 .detailItem,
@@ -321,9 +310,7 @@
   border: 1px solid var(--line);
   border-radius: 1.15rem;
   padding: 0.82rem;
-  background:
-    radial-gradient(circle at top right, color-mix(in srgb, var(--accent) 8%, transparent), transparent 64%),
-    color-mix(in srgb, var(--paper) 78%, transparent);
+  background: var(--app-surface-muted);
 }
 
 .studioBanner svg {
@@ -364,9 +351,9 @@
   gap: 0.08rem 0.68rem;
   align-items: center;
   border: 1px solid var(--line);
-  border-radius: 1rem;
+  border-radius: 1.12rem;
   padding: 0.75rem;
-  background: color-mix(in srgb, var(--paper) 72%, transparent);
+  background: var(--app-surface-muted);
 }
 
 .quickLinks svg {
@@ -404,7 +391,12 @@
 :global(html[data-theme="dark"]) .statsStrip,
 :global(html[data-theme="dark"]) .notice,
 :global(html[data-theme="dark"]) .empty {
-  background: color-mix(in srgb, var(--paper) 84%, transparent);
+  background: var(--app-surface);
+}
+
+:global(html[data-theme="dark"]) .avatarFrame {
+  color: color-mix(in srgb, var(--accent) 68%, white);
+  box-shadow: 0 22px 48px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 :global(html[data-theme="dark"]) .primaryAction,

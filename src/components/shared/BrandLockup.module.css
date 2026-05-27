@@ -1,0 +1,53 @@
+.brand {
+  --brand-size: 2.85rem;
+  --brand-gap: 0.82rem;
+  --brand-label-size: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--brand-gap);
+  color: var(--ink);
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.logoWrap {
+  width: var(--brand-size);
+  height: var(--brand-size);
+  flex: 0 0 var(--brand-size);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 18px 38px rgba(13, 14, 17, 0.18);
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.22), transparent 36%),
+    linear-gradient(145deg, #232a35, #0d1016);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.label {
+  font-size: var(--brand-label-size);
+  line-height: 1;
+  color: inherit;
+}
+
+.compact {
+  --brand-size: 2.25rem;
+  --brand-gap: 0.7rem;
+  --brand-label-size: 0.96rem;
+}
+
+.large {
+  --brand-size: 3rem;
+  --brand-gap: 0.9rem;
+  --brand-label-size: 1.06rem;
+}

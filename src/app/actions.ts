@@ -2,6 +2,11 @@
 
 import { randomUUID } from "node:crypto";
 import { refresh, revalidatePath, updateTag } from "next/cache";
+import {
+  getCreatorAccessState,
+  getFollowedArtistIds,
+  updateBirvanaAccountMetadata,
+} from "@/lib/auth/account-state";
 import { deleteObjectFromR2, keyFromUrl, putObjectToR2 } from "@/lib/r2/client";
 import { DATA_CACHE_TAGS } from "@/lib/cache-tags";
 import { getAdminSupabase, getServerSupabase } from "@/lib/supabase/server";
@@ -219,41 +224,68 @@ export async function togglePlaylistSaveAction(playlistId: string, shouldSave: b
 }
 
 export async function toggleArtistFollowAction(artistId: string, shouldFollow: boolean) {
-  const { mutationSupabase, user } = await requireAuthedSupabase();
-
-  if (artistId === user.id) {
-    return;
-  }
+  const { user } = await requireAuthedSupabase();
+  const followedArtistIds = new Set(getFollowedArtistIds(user));
 
   if (shouldFollow) {
-    const { error } = await mutationSupabase.from("artist_follows").upsert(
-      {
-        user_id: user.id,
-        artist_id: artistId,
-      },
-      {
-        onConflict: "user_id,artist_id",
-        ignoreDuplicates: true,
-      },
-    );
-
-    if (error) {
-      throw new Error(error.message);
-    }
+    followedArtistIds.add(artistId);
   } else {
-    const { error } = await mutationSupabase
-      .from("artist_follows")
-      .delete()
-      .eq("user_id", user.id)
-      .eq("artist_id", artistId);
-
-    if (error) {
-      throw new Error(error.message);
-    }
+    followedArtistIds.delete(artistId);
   }
 
-  updateDataTags(DATA_CACHE_TAGS.engagement, DATA_CACHE_TAGS.artists, DATA_CACHE_TAGS.profile);
+  await updateBirvanaAccountMetadata(user.id, user.app_metadata, {
+    followedArtistIds: [...followedArtistIds].toSorted(),
+  });
+
+  updateDataTags(DATA_CACHE_TAGS.artists, DATA_CACHE_TAGS.profile);
   refresh();
+}
+
+export async function submitCreatorAccessRequestAction(formData: FormData) {
+  const { user } = await requireAuthedSupabase();
+  const creatorAccess = getCreatorAccessState(user);
+
+  if (creatorAccess.hasRequest) {
+    return creatorAccess.request;
+  }
+
+  const fullName = String(formData.get("fullName") ?? "").trim();
+  const email = String(formData.get("email") ?? user.email ?? "").trim().toLowerCase();
+  const youtubeHandle = String(formData.get("youtubeHandle") ?? "").trim();
+  const location = String(formData.get("location") ?? "").trim();
+  const notes = String(formData.get("notes") ?? "").trim();
+
+  if (!fullName) {
+    throw new Error("Full name is required.");
+  }
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/u.test(email)) {
+    throw new Error("A valid email address is required.");
+  }
+
+  if (!youtubeHandle) {
+    throw new Error("YouTube handle is required.");
+  }
+
+  const request = {
+    fullName,
+    email,
+    youtubeHandle,
+    location: location || null,
+    notes: notes || null,
+    submittedAt: new Date().toISOString(),
+    status: "pending" as const,
+  };
+
+  await updateBirvanaAccountMetadata(user.id, user.app_metadata, {
+    creatorAccessRequest: request,
+  });
+
+  updateDataTags(DATA_CACHE_TAGS.profile, DATA_CACHE_TAGS.studio);
+  revalidateAppPaths(["/profile", "/studio", "/studio/upload", "/studio/tracks", "/studio/playlists"]);
+  refresh();
+
+  return request;
 }
 
 export async function updateProfileAction(formData: FormData) {

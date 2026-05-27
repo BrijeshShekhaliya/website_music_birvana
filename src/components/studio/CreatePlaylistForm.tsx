@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 import styles from "./CreatePlaylistForm.module.css";
 
-export function CreatePlaylistForm() {
+export function CreatePlaylistForm({ compact = false }: { compact?: boolean }) {
   const router = useRouter();
   const [name, setName] = useState("");
   const [message, setMessage] = useState<{ tone: "success" | "error"; text: string } | null>(null);
@@ -37,7 +37,7 @@ export function CreatePlaylistForm() {
   };
 
   return (
-    <form className={styles.form} onSubmit={onSubmit}>
+    <form className={`${styles.form} ${compact ? styles.compact : ""}`} onSubmit={onSubmit}>
       <div className={styles.intro}>
         <p className={styles.kicker}>Quick create</p>
         <h2 className={styles.title}>New playlist</h2>

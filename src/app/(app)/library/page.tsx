@@ -12,48 +12,26 @@ export default async function LibraryPage() {
   }
 
   const { ownedPlaylists, savedPlaylists } = await getLibraryData(user.id);
-  const totalCollections = ownedPlaylists.length + savedPlaylists.length;
 
   return (
     <div className={styles.page}>
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
           <p className={styles.heroEyebrow}>Library</p>
-          <h1 className={styles.heroTitle}>Your listening home base.</h1>
-          <p className={styles.heroText}>
-            Keep the playlists you build and the collections you save in one place with a cleaner,
-            toggle-based library that feels closer to a real music app.
-          </p>
-        </div>
-
-        <div className={styles.heroStats}>
-          <div className={styles.statCard}>
-            <span className={styles.statLabel}>Managed</span>
-            <strong className={styles.statValue}>{ownedPlaylists.length}</strong>
-            <span className={styles.statMeta}>playlists you control</span>
-          </div>
-          <div className={styles.statCard}>
-            <span className={styles.statLabel}>Saved</span>
-            <strong className={styles.statValue}>{savedPlaylists.length}</strong>
-            <span className={styles.statMeta}>collections you follow</span>
-          </div>
-          <div className={styles.statCard}>
-            <span className={styles.statLabel}>In library</span>
-            <strong className={styles.statValue}>{totalCollections}</strong>
-            <span className={styles.statMeta}>playlists across both sections</span>
-          </div>
+          <h1 className={styles.heroTitle}>Your playlists, in one place.</h1>
+          <p className={styles.heroText}>Open what you made, saved, or want to hear again.</p>
         </div>
       </section>
 
       <section className={styles.historyEntry} aria-label="Playback history">
         <div>
-          <p className={styles.historyEyebrow}>Continue listening</p>
-          <h2>Recently played songs</h2>
-          <p>Open your last 10 songs and resume from the latest saved position on this device.</p>
+          <p className={styles.historyEyebrow}>History</p>
+          <h2>Resume listening</h2>
+          <p>Jump back into your recent songs.</p>
         </div>
         <Link href="/history" className={styles.historyLink}>
           <Clock3 size={18} strokeWidth={2} />
-          View history
+          Open
         </Link>
       </section>
 

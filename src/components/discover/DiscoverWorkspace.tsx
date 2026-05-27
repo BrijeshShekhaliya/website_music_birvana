@@ -1,34 +1,33 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { startTransition, useDeferredValue, useMemo, useState } from "react";
+import { startTransition, useDeferredValue, useMemo, useState, type CSSProperties } from "react";
 import styles from "./DiscoverWorkspace.module.css";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { LazyImage } from "@/components/shared/LazyImage";
 import { PlaylistCard } from "@/components/shared/PlaylistCard";
 import { TrackCard } from "@/components/shared/TrackCard";
 import { resolveTrackCategory, type MusicCategory } from "@/lib/music/categories";
 import { searchPlaylists, searchTracks } from "@/lib/search";
 import type { Playlist, Track } from "@/types/models";
 
-type DiscoverCategory =
-  | "all"
-  | MusicCategory;
+type DiscoverCategory = "all" | MusicCategory;
 type DiscoverTrackCategory = Exclude<DiscoverCategory, "all">;
 
-const shelfLimit = 12;
+const shelfLimit = 10;
+const playlistLimit = 8;
 
 const browseCategories: Array<{
   id: DiscoverCategory;
-  label: string;
+  title: string;
+  eyebrow: string;
 }> = [
-  { id: "all", label: "All songs" },
-  { id: "hindi", label: "Hindi" },
-  { id: "punjabi", label: "Punjabi" },
-  { id: "english", label: "English" },
-  { id: "south", label: "Tamil & South" },
-  { id: "devotional", label: "Devotional" },
-  { id: "other", label: "Other" },
+  { id: "all", title: "Everything", eyebrow: "Full catalog" },
+  { id: "hindi", title: "Bollywood", eyebrow: "Hindi" },
+  { id: "punjabi", title: "Punjabi", eyebrow: "High energy" },
+  { id: "english", title: "Global", eyebrow: "Worldwide" },
+  { id: "south", title: "South", eyebrow: "Regional" },
+  { id: "devotional", title: "Bhakti", eyebrow: "Reflective" },
+  { id: "other", title: "Indie", eyebrow: "Unexpected" },
 ];
 
 function getCreatedTime(track: Track) {
@@ -40,17 +39,14 @@ function getCreatedTime(track: Track) {
   return Number.isNaN(time) ? 0 : time;
 }
 
-function getCategoryLabel(categoryId: DiscoverCategory) {
-  return browseCategories.find((category) => category.id === categoryId)?.label ?? "Songs";
-}
+function sortByPlaysThenRecent(a: Track, b: Track) {
+  const playDelta = (b.play_count ?? 0) - (a.play_count ?? 0);
 
-function getCategoryFallback(label: string) {
-  return label
-    .split(/\s|&/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part.at(0))
-    .join("");
+  if (playDelta !== 0) {
+    return playDelta;
+  }
+
+  return getCreatedTime(b) - getCreatedTime(a);
 }
 
 function TrackShelf({
@@ -64,7 +60,7 @@ function TrackShelf({
   onAction,
 }: {
   title: string;
-  meta: string;
+  meta?: string;
   tracks: Track[];
   queueKey: string;
   likedSet: Set<number>;
@@ -81,8 +77,9 @@ function TrackShelf({
       <div className={styles.sectionHeader}>
         <div>
           <h2 className={styles.sectionTitle}>{title}</h2>
-          <p className={styles.sectionMeta}>{meta}</p>
+          {meta ? <p className={styles.sectionMeta}>{meta}</p> : null}
         </div>
+
         {actionLabel && onAction ? (
           <button type="button" className={styles.textButton} onClick={onAction}>
             {actionLabel}
@@ -110,12 +107,14 @@ function TrackShelf({
 
 function PlaylistShelf({
   title,
+  meta,
   playlists,
   savedSet,
   canEngage,
   currentUserId,
 }: {
   title: string;
+  meta?: string;
   playlists: Playlist[];
   savedSet: Set<string>;
   canEngage: boolean;
@@ -130,11 +129,11 @@ function PlaylistShelf({
       <div className={styles.sectionHeader}>
         <div>
           <h2 className={styles.sectionTitle}>{title}</h2>
-          <p className={styles.sectionMeta}>{playlists.length} public collections</p>
+          {meta ? <p className={styles.sectionMeta}>{meta}</p> : null}
         </div>
       </div>
 
-      <div className={`${styles.railViewport} ${styles.playlistRailViewport}`}>
+      <div className={`${styles.railViewport} ${styles.playlistViewport}`}>
         {playlists.map((playlist) => (
           <PlaylistCard
             key={playlist.id}
@@ -191,49 +190,35 @@ export function DiscoverWorkspace({
   }, [tracks]);
 
   const categorySummaries = useMemo(() => {
-    return browseCategories.map((category) => {
-      const categoryTracks = category.id === "all" ? tracks : tracksByCategory[category.id];
-      return {
-        ...category,
-        count: categoryTracks.length,
-        leadTrack: categoryTracks[0] ?? null,
-      };
-    });
-  }, [tracks, tracksByCategory]);
+    return browseCategories.map((category) => ({ ...category }));
+  }, []);
+  const visibleCategorySummaries = categorySummaries.filter((category) => category.id !== "all");
 
-  const selectedCategoryTracks = useMemo(() => {
+  const allCatalogTracks = useMemo(() => [...tracks].sort(sortByPlaysThenRecent), [tracks]);
+  const featuredPlaylists = useMemo(() => playlists.slice(0, playlistLimit), [playlists]);
+
+  const focusedTracks = useMemo(() => {
     if (activeCategory === "all") {
-      return tracks;
+      return allCatalogTracks;
     }
 
-    return tracksByCategory[activeCategory];
-  }, [activeCategory, tracks, tracksByCategory]);
-
-  const topTracks = useMemo(() => tracks.slice(0, shelfLimit), [tracks]);
-  const newTracks = useMemo(
-    () => [...tracks].sort((a, b) => getCreatedTime(b) - getCreatedTime(a)).slice(0, shelfLimit),
-    [tracks],
-  );
-
-  const categoryShelves = useMemo(() => {
-    return browseCategories
-      .filter((category): category is { id: DiscoverTrackCategory; label: string } => category.id !== "all")
-      .map((category) => ({
-        ...category,
-        tracks: tracksByCategory[category.id],
-      }))
-      .filter((category) => category.tracks.length > 0);
-  }, [tracksByCategory]);
+    return [...tracksByCategory[activeCategory]].sort(sortByPlaysThenRecent).slice(0, shelfLimit);
+  }, [activeCategory, allCatalogTracks, tracksByCategory]);
 
   const filteredTracks = useMemo(
-    () => (searching ? searchTracks(tracks, normalizedQuery) : selectedCategoryTracks),
-    [normalizedQuery, searching, selectedCategoryTracks, tracks],
+    () => (searching ? searchTracks(tracks, normalizedQuery) : []),
+    [normalizedQuery, searching, tracks],
   );
 
   const filteredPlaylists = useMemo(
-    () => (searching ? searchPlaylists(playlists, normalizedQuery) : playlists),
+    () => (searching ? searchPlaylists(playlists, normalizedQuery) : []),
     [normalizedQuery, playlists, searching],
   );
+  const hasCatalogContent = tracks.length > 0 || playlists.length > 0;
+
+  const activeCategorySummary =
+    categorySummaries.find((category) => category.id === activeCategory) ?? categorySummaries[0];
+  const quickTracks = focusedTracks.slice(0, 5);
 
   const selectCategory = (categoryId: DiscoverCategory) => {
     startTransition(() => {
@@ -244,20 +229,17 @@ export function DiscoverWorkspace({
 
   return (
     <div className={styles.page}>
-      <section className={styles.hero} aria-label="Discover music">
-        <div className={styles.heroCopy}>
-          <h1 className={styles.heroTitle}>Discover</h1>
-          <p className={styles.heroText}>Find songs, browse categories, and keep listening.</p>
-        </div>
-
-        <label className={styles.searchField}>
-          <Search size={17} strokeWidth={2.15} />
+      <section className={styles.commandDeck} aria-label="Discover search">
+        <label className={styles.commandBar}>
+          <Search size={17} strokeWidth={2.1} />
           <input
-            type="search"
+            type="text"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
-            placeholder="Search songs or playlists"
+            placeholder="Search songs, artists, or playlists"
             aria-label="Search songs or playlists"
+            autoComplete="off"
+            spellCheck={false}
           />
           {query ? (
             <button type="button" onClick={() => setQuery("")} aria-label="Clear search">
@@ -267,42 +249,9 @@ export function DiscoverWorkspace({
         </label>
       </section>
 
-      <section className={styles.categoryDeck} aria-label="Browse by category">
-        {categorySummaries.map((category) => {
-          const active = activeCategory === category.id && !searching;
-          return (
-            <button
-              key={category.id}
-              type="button"
-              className={`${styles.categoryCard} ${active ? styles.categoryCardActive : ""}`}
-              onClick={() => selectCategory(category.id)}
-            >
-              <span
-                className={styles.categoryArt}
-                aria-hidden="true"
-              >
-                {category.leadTrack?.cover_url ? (
-                  <LazyImage
-                    className={styles.categoryImage}
-                    src={category.leadTrack.cover_url}
-                    alt=""
-                  />
-                ) : (
-                  getCategoryFallback(category.label)
-                )}
-              </span>
-              <span className={styles.categoryBody}>
-                <span className={styles.categoryTitle}>{category.label}</span>
-                <span className={styles.categoryMeta}>{category.count} songs</span>
-              </span>
-            </button>
-          );
-        })}
-      </section>
-
       {searching ? (
         <section className={styles.searchResults} aria-label="Search results">
-          <div className={styles.resultsHeader}>
+          <div className={styles.sectionHeader}>
             <div>
               <h2 className={styles.sectionTitle}>Search results</h2>
               <p className={styles.sectionMeta}>
@@ -317,7 +266,7 @@ export function DiscoverWorkspace({
           {filteredTracks.length ? (
             <TrackShelf
               title="Songs"
-              meta={`${filteredTracks.length} matches`}
+              meta="Matching tracks"
               tracks={filteredTracks}
               queueKey={`discover-search:${normalizedQuery}`}
               likedSet={likedSet}
@@ -328,6 +277,7 @@ export function DiscoverWorkspace({
           {filteredPlaylists.length ? (
             <PlaylistShelf
               title="Playlists"
+              meta="Matching collections"
               playlists={filteredPlaylists}
               savedSet={savedSet}
               canEngage={canEngage}
@@ -338,73 +288,92 @@ export function DiscoverWorkspace({
           {!filteredTracks.length && !filteredPlaylists.length ? (
             <EmptyState
               title="No matches found"
-              description="Try a shorter title, artist name, playlist name, or another spelling."
+              description="Try a shorter title, an artist name, or a different spelling."
             />
           ) : null}
         </section>
-      ) : activeCategory !== "all" ? (
-        <TrackShelf
-          title={`${getCategoryLabel(activeCategory)} songs`}
-          meta={`${selectedCategoryTracks.length} available tracks`}
-          tracks={selectedCategoryTracks}
-          queueKey={`discover-category:${activeCategory}`}
-          likedSet={likedSet}
-          canEngage={canEngage}
-          actionLabel="All songs"
-          onAction={() => selectCategory("all")}
-        />
       ) : (
         <>
-          <TrackShelf
-            title="Top songs"
-            meta={`${topTracks.length} most played tracks`}
-            tracks={topTracks}
-            queueKey="discover-top-songs"
-            likedSet={likedSet}
-            canEngage={canEngage}
-          />
+          {!hasCatalogContent ? (
+            <section className={styles.searchResults} aria-label="Discover status">
+              <EmptyState
+                title="Discovery is still syncing."
+                description="The catalog has not loaded into this view yet. Refresh in a moment or head back to the home page while the latest songs and playlists are fetched."
+                actionLabel="Open home"
+                actionHref="/"
+              />
+            </section>
+          ) : null}
 
-          <TrackShelf
-            title="New releases"
-            meta={`${newTracks.length} latest uploads`}
-            tracks={newTracks}
-            queueKey="discover-new-releases"
-            likedSet={likedSet}
-            canEngage={canEngage}
-          />
-
-          <PlaylistShelf
-            title="Public playlists"
-            playlists={filteredPlaylists}
-            savedSet={savedSet}
-            canEngage={canEngage}
-            currentUserId={currentUserId}
-          />
-
-          <section className={styles.categoryShelves} aria-label="Songs by category">
+          <section className={styles.laneSection} id="discover-lanes">
             <div className={styles.sectionHeader}>
               <div>
-                <h2 className={styles.sectionTitle}>Browse by sound</h2>
-                <p className={styles.sectionMeta}>Every public track grouped into its best match.</p>
+                <h2 className={styles.sectionTitle}>Browse lanes</h2>
               </div>
             </div>
 
-            {categoryShelves.map((category) => (
+            {hasCatalogContent ? (
+              <div className={styles.categoryRail}>
+                {visibleCategorySummaries.map((category) => {
+                  const active = activeCategory === category.id;
+                  const categoryPreviewTrack =
+                    category.id === "all"
+                      ? allCatalogTracks[0]
+                      : [...tracksByCategory[category.id]].sort(sortByPlaysThenRecent)[0];
+
+                  return (
+                    <button
+                      key={category.id}
+                      type="button"
+                      className={`${styles.categoryCard} ${active ? styles.categoryCardActive : ""}`}
+                      style={
+                        categoryPreviewTrack?.cover_url
+                          ? ({ "--category-image": `url(${categoryPreviewTrack.cover_url})` } as CSSProperties)
+                          : undefined
+                      }
+                      data-has-image={categoryPreviewTrack?.cover_url ? "true" : "false"}
+                      onClick={() => selectCategory(category.id)}
+                    >
+                      <span className={styles.categoryOverlay}>
+                        <span className={styles.categoryEyebrow}>{category.eyebrow}</span>
+                        <strong className={styles.categoryTitle}>{category.title}</strong>
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            ) : null}
+          </section>
+
+          {hasCatalogContent ? (
+            <section className={styles.mainColumn}>
               <TrackShelf
-                key={category.id}
-                title={category.label}
-                meta={`${category.tracks.length} songs`}
-                tracks={category.tracks.slice(0, shelfLimit)}
-                queueKey={`discover-shelf:${category.id}`}
+                title="Made for you"
+                tracks={quickTracks}
+                queueKey={`discover-quick:${activeCategory}`}
                 likedSet={likedSet}
                 canEngage={canEngage}
-                actionLabel={category.tracks.length > shelfLimit ? "View all" : undefined}
-                onAction={
-                  category.tracks.length > shelfLimit ? () => selectCategory(category.id) : undefined
-                }
               />
-            ))}
-          </section>
+
+              <PlaylistShelf
+                title="Featured collections"
+                playlists={featuredPlaylists}
+                savedSet={savedSet}
+                canEngage={canEngage}
+                currentUserId={currentUserId}
+              />
+
+              <TrackShelf
+                title={activeCategory === "all" ? "Everything" : `${activeCategorySummary.title} songs`}
+                tracks={focusedTracks}
+                queueKey={`discover-focus:${activeCategory}`}
+                likedSet={likedSet}
+                canEngage={canEngage}
+                actionLabel={activeCategory !== "all" ? "Show all" : undefined}
+                onAction={activeCategory !== "all" ? () => selectCategory("all") : undefined}
+              />
+            </section>
+          ) : null}
         </>
       )}
     </div>

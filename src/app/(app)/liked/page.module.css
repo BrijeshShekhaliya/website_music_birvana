@@ -1,13 +1,30 @@
 .page {
   display: grid;
-  gap: 1.25rem;
+  gap: 1.35rem;
 }
 
 .hero {
   display: grid;
   gap: 1rem;
-  padding: 1rem 0 0.2rem;
-  background: transparent;
+  padding: 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 1.65rem;
+  background: var(--app-surface);
+  box-shadow: var(--app-surface-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -8rem;
+  right: -8rem;
+  width: 22rem;
+  height: 22rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent-soft) 92%, transparent) 0%, transparent 72%);
+  opacity: 0.86;
 }
 
 .heroCopy {
@@ -28,8 +45,8 @@
 .heroTitle {
   margin: 0;
   font-family: var(--font-space-grotesk), sans-serif;
-  font-size: clamp(2rem, 3vw, 3.25rem);
-  line-height: 0.95;
+  font-size: clamp(2.25rem, 3vw, 3.6rem);
+  line-height: 0.92;
   letter-spacing: -0.07em;
 }
 
@@ -40,53 +57,19 @@
   max-width: 52ch;
 }
 
-.heroStats {
-  display: grid;
-  gap: 0.8rem;
-}
-
-.statCard {
-  display: grid;
-  gap: 0.3rem;
-  padding: 0.95rem 1rem;
-  border-radius: 1.2rem;
-  border: 1px solid rgba(23, 21, 22, 0.06);
-  background: rgba(255, 255, 255, 0.54);
-}
-
-:global(html[data-theme="dark"]) .statCard {
-  border-color: rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.07);
-}
-
-.statLabel,
-.statMeta,
-.sectionMeta {
-  color: var(--muted);
-}
-
-.statLabel {
-  font-size: 0.74rem;
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-}
-
-.statValue {
-  font-size: clamp(1.6rem, 2vw, 2.15rem);
-  line-height: 1;
-  letter-spacing: -0.06em;
-}
-
-.statMeta,
 .sectionMeta {
   font-size: 0.88rem;
+  color: var(--muted);
 }
 
 .tracksSection {
   display: grid;
   gap: 0.95rem;
-  padding: 0.1rem 0 0;
-  background: transparent;
+  padding: 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 1.6rem;
+  background: var(--app-surface);
+  box-shadow: var(--app-surface-shadow);
 }
 
 .sectionHeader {
@@ -116,20 +99,7 @@
   }
 
   .hero {
-    grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
-    align-items: end;
-    gap: 1.35rem;
-    padding-top: 1.15rem;
-  }
-
-  .heroStats {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 899px) {
-  .heroStats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 1.2rem;
   }
 }
 
@@ -140,26 +110,17 @@
 
   .hero {
     gap: 0.85rem;
-    padding-top: 0.3rem;
+    padding: 1rem;
+  }
+
+  .tracksSection {
+    padding: 1rem;
+    border-radius: 1.2rem;
   }
 
   .heroText {
     font-size: 0.94rem;
     line-height: 1.5;
-  }
-
-  .heroStats {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.68rem;
-  }
-
-  .statCard {
-    padding: 0.82rem 0.88rem;
-    border-radius: 1.05rem;
-  }
-
-  .statMeta {
-    font-size: 0.8rem;
   }
 
   .sectionHeader {

@@ -1,23 +1,118 @@
 .page,
-.grid {
+.grid,
+.hero,
+.directory {
   display: grid;
   gap: 1rem;
 }
 
-@media (min-width: 360px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.page {
+  align-content: start;
 }
 
-@media (min-width: 700px) {
-  .grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+.hero,
+.directory {
+  border: 1px solid var(--line);
+  background: var(--app-surface);
+  box-shadow: var(--app-surface-shadow);
+  border-radius: 1.55rem;
+  padding: 1rem;
 }
 
-@media (min-width: 1080px) {
+.eyebrow,
+.sectionEyebrow {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.74rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.title,
+.sectionTitle {
+  margin: 0;
+  font-family: var(--font-space-grotesk), sans-serif;
+  color: var(--ink);
+  letter-spacing: -0.05em;
+}
+
+.title {
+  margin-top: 0.3rem;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 0.96;
+}
+
+.subtitle {
+  margin: 0.6rem 0 0;
+  max-width: 56ch;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.heroMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.heroMeta span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.2rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--app-surface-muted);
+  padding: 0.38rem 0.7rem;
+  color: var(--ink);
+  font-weight: 700;
+}
+
+.directoryHeader {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.sectionTitle {
+  margin-top: 0.2rem;
+  font-size: clamp(1.4rem, 2vw, 2rem);
+}
+
+.grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 0.9rem;
+}
+
+@media (min-width: 900px) {
   .grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1180px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .hero,
+  .directory {
+    padding: 0.88rem;
+    border-radius: 1.18rem;
+  }
+
+  .title {
+    font-size: clamp(1.86rem, 10vw, 2.6rem);
+  }
+
+  .subtitle {
+    margin-top: 0.45rem;
+    line-height: 1.5;
+  }
+
+  .grid {
+    gap: 0.85rem 0.78rem;
   }
 }

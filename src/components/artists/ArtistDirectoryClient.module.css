@@ -1,0 +1,138 @@
+.page,
+.header,
+.directory,
+.grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.header,
+.directory {
+  border: 1px solid var(--line);
+  background: var(--app-surface);
+  box-shadow: var(--app-surface-shadow);
+  border-radius: 1.55rem;
+  padding: 1rem;
+}
+
+.headingRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font-space-grotesk), sans-serif;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 0.98;
+  letter-spacing: -0.06em;
+}
+
+.resultMeta {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.searchField {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.65rem;
+  min-height: 3.2rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--app-surface-muted);
+  padding: 0 0.9rem;
+}
+
+.searchField svg {
+  color: var(--muted);
+}
+
+.searchField input {
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+}
+
+.searchField input::placeholder {
+  color: var(--muted);
+}
+
+.searchField button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.9rem;
+  height: 1.9rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+}
+
+.grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem 0.9rem;
+}
+
+.emptyState {
+  display: grid;
+  gap: 0.35rem;
+  border: 1px dashed var(--line);
+  border-radius: 1.2rem;
+  background: var(--app-surface-muted);
+  padding: 1rem;
+}
+
+.emptyTitle,
+.emptyText {
+  margin: 0;
+}
+
+.emptyTitle {
+  font-weight: 700;
+}
+
+.emptyText {
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1180px) {
+  .grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .header,
+  .directory {
+    padding: 0.88rem;
+    border-radius: 1.18rem;
+  }
+
+  .title {
+    font-size: clamp(1.68rem, 9vw, 2.3rem);
+  }
+
+  .searchField {
+    min-height: 3rem;
+    padding: 0 0.8rem;
+  }
+
+  .grid {
+    gap: 0.85rem 0.78rem;
+  }
+}

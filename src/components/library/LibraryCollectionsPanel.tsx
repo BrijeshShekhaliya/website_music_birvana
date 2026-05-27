@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import styles from "./LibraryCollectionsPanel.module.css";
+import { CreatePlaylistModal } from "@/components/library/CreatePlaylistModal";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { PlaylistCard } from "@/components/shared/PlaylistCard";
 import type { Playlist } from "@/types/models";
@@ -29,14 +29,7 @@ export function LibraryCollectionsPanel({
       <div className={styles.header}>
         <div className={styles.titleBlock}>
           <p className={styles.eyebrow}>Library collections</p>
-          <h2 className={styles.title}>
-            {isCreatedTab ? "Playlists you manage" : "Playlists you saved"}
-          </h2>
-          <p className={styles.description}>
-            {isCreatedTab
-              ? "Your own mixes stay front and center here, ready to open, edit, and grow."
-              : "The collections you follow stay in one place so you can jump back in fast."}
-          </p>
+          <h2 className={styles.title}>{isCreatedTab ? "Your playlists" : "Saved playlists"}</h2>
         </div>
 
         <div className={styles.headerSide}>
@@ -49,7 +42,6 @@ export function LibraryCollectionsPanel({
               onClick={() => setActiveTab("created")}
             >
               <span>Created</span>
-              <span className={styles.toggleCount}>{ownedPlaylists.length}</span>
             </button>
             <button
               type="button"
@@ -59,15 +51,10 @@ export function LibraryCollectionsPanel({
               onClick={() => setActiveTab("saved")}
             >
               <span>Saved</span>
-              <span className={styles.toggleCount}>{savedPlaylists.length}</span>
             </button>
           </div>
 
-          {isCreatedTab ? (
-            <Link href="/studio/playlists" className={styles.action}>
-              Create playlist
-            </Link>
-          ) : null}
+          <CreatePlaylistModal triggerClassName={styles.action} />
         </div>
       </div>
 
@@ -86,14 +73,12 @@ export function LibraryCollectionsPanel({
       ) : isCreatedTab ? (
         <EmptyState
           title="No playlists created"
-          description="Create a playlist in Studio and it will show up here in your library."
-          actionLabel="Create playlist"
-          actionHref="/studio/playlists"
+          description="Create a playlist and it will show here."
         />
       ) : (
         <EmptyState
           title="Nothing saved yet"
-          description="Save a playlist from Discover or an artist page to build your library."
+          description="Save a playlist from Discover or an artist page."
           actionLabel="Browse discover"
           actionHref="/discover"
         />

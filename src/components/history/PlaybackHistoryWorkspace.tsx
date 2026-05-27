@@ -36,16 +36,10 @@ export function PlaybackHistoryWorkspace() {
   return (
     <div className={styles.page}>
       <section className={styles.hero}>
-        <div className={styles.heroIcon}>
-          <Clock3 size={24} strokeWidth={2} />
-        </div>
         <div className={styles.heroCopy}>
           <p className={styles.eyebrow}>History</p>
-          <h1>Pick up where you left off.</h1>
-          <p>
-            Your last 10 played songs stay on this device with their saved position, so a refresh or
-            page change does not reset the listening flow.
-          </p>
+          <h1>Recently played</h1>
+          <p>Your recent songs stay ready to resume on this device.</p>
         </div>
         {history.length ? (
           <button type="button" className={styles.clearButton} onClick={clearPlaybackHistory}>
@@ -57,7 +51,7 @@ export function PlaybackHistoryWorkspace() {
 
       {history.length ? (
         <section className={styles.historyList} aria-label="Playback history">
-          {history.map((item, index) => {
+          {history.map((item) => {
             const active = currentTrack?.id === item.track.id;
             const canToggle = active;
 
@@ -101,8 +95,6 @@ export function PlaybackHistoryWorkspace() {
                   <RotateCcw size={16} strokeWidth={2} />
                   Resume
                 </button>
-
-                <span className={styles.index}>{String(index + 1).padStart(2, "0")}</span>
               </article>
             );
           })}
@@ -111,7 +103,7 @@ export function PlaybackHistoryWorkspace() {
         <section className={styles.empty}>
           <Clock3 size={24} strokeWidth={2} />
           <h2>No play history yet</h2>
-          <p>Play a song and it will appear here with its latest saved position.</p>
+          <p>Play a song and it will appear here.</p>
           <Link href="/discover">Browse music</Link>
         </section>
       )}

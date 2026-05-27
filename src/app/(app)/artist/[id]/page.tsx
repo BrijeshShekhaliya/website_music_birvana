@@ -1,10 +1,11 @@
 import { notFound } from "next/navigation";
 import { ArtistFollowButton } from "@/components/shared/ArtistFollowButton";
-import styles from "./page.module.css";
 import { EmptyState } from "@/components/shared/EmptyState";
-import { SectionTitle } from "@/components/shared/SectionTitle";
+import { LazyImage } from "@/components/shared/LazyImage";
 import { TrackCard } from "@/components/shared/TrackCard";
+import { getFollowedArtistIds } from "@/lib/auth/account-state";
 import { getArtistDetail, getCurrentUser, getEngagementState } from "@/lib/data";
+import styles from "./page.module.css";
 
 export default async function ArtistDetailPage({
   params,
@@ -12,7 +13,8 @@ export default async function ArtistDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  const [user, { artist, tracks, albums }] = await Promise.all([getCurrentUser(), getArtistDetail(id)]);
+  const [user, detail] = await Promise.all([getCurrentUser(), getArtistDetail(id)]);
+  const { artist, tracks } = detail;
 
   if (!artist) {
     notFound();
@@ -22,39 +24,65 @@ export default async function ArtistDetailPage({
     ? await getEngagementState({
         userId: user.id,
         songIds: tracks.map((track) => track.id),
-        artistIds: [artist.id],
       })
     : null;
   const likedSongIds = new Set(engagement?.likedSongIds ?? []);
-  const followedArtistIds = new Set(engagement?.followedArtistIds ?? []);
+  const followedArtistIds = user ? new Set(getFollowedArtistIds(user)) : new Set<string>();
 
   return (
     <div className={styles.page}>
       <section className={styles.hero}>
-        <p className={styles.name}>{artist.display_name}</p>
-        <p className={styles.bio}>{artist.bio || "This artist has not added a bio yet."}</p>
-        {user && artist.id !== user.id ? (
+        <div className={styles.heroMedia}>
+          {artist.image_url ? (
+            <LazyImage className={styles.heroImage} src={artist.image_url} alt={artist.name} />
+          ) : (
+            <div className={styles.heroFallback}>{artist.name.slice(0, 1)}</div>
+          )}
+        </div>
+
+        <div className={styles.heroCopy}>
+          <p className={styles.eyebrow}>Artist</p>
+          <h1 className={styles.name}>{artist.name}</h1>
+          {artist.bio ? (
+            <p className={styles.bio}>{artist.bio}</p>
+          ) : (
+            <p className={`${styles.bio} ${styles.bioMuted}`}>
+              Explore the songs currently available from {artist.name} in the BIRVANA catalog.
+            </p>
+          )}
+
           <div className={styles.actions}>
-            <ArtistFollowButton
-              artistId={artist.id}
-              initialFollowing={followedArtistIds.has(artist.id)}
-            />
+            <span className={styles.infoPill}>
+              {tracks.length} {tracks.length === 1 ? "song" : "songs"}
+            </span>
+            {user ? (
+              <ArtistFollowButton
+                artistId={artist.id}
+                initialFollowing={followedArtistIds.has(artist.id)}
+              />
+            ) : null}
           </div>
-        ) : null}
+        </div>
       </section>
 
-      <section>
-        <SectionTitle eyebrow="Tracks" title="Available songs" meta={`${tracks.length} ready`} />
+      <section className={styles.trackPanel}>
+        <div className={styles.trackHeader}>
+          <div>
+            <p className={styles.trackEyebrow}>Catalog</p>
+            <h2 className={styles.trackTitle}>Songs by {artist.name}</h2>
+          </div>
+        </div>
+
         {tracks.length ? (
-          <div className={styles.tracks}>
+          <div className={styles.trackList}>
             {tracks.map((track, index) => (
               <TrackCard
                 key={track.id}
                 track={track}
                 tracks={tracks}
                 index={index}
-                variant="row"
-                queueKey={`artist:${artist.id}`}
+                variant="liked"
+                queueKey={`artist:${artist.slug}`}
                 initialLiked={likedSongIds.has(track.id)}
                 showLikeButton={Boolean(user)}
               />
@@ -62,27 +90,8 @@ export default async function ArtistDetailPage({
           </div>
         ) : (
           <EmptyState
-            title="No released songs"
-            description="This artist does not have any ready tracks visible yet."
-          />
-        )}
-      </section>
-
-      <section>
-        <SectionTitle eyebrow="Albums" title="Releases" meta={`${albums.length} listed`} />
-        {albums.length ? (
-          <div className={styles.albums}>
-            {albums.map((album) => (
-              <article key={album.id} className={styles.albumCard}>
-                <p className={styles.albumTitle}>{album.title}</p>
-                <p className={styles.albumMeta}>{album.release_date || "Release date not set"}</p>
-              </article>
-            ))}
-          </div>
-        ) : (
-          <EmptyState
-            title="No albums yet"
-            description="Album releases will appear here once the artist starts grouping songs."
+            title="No songs available yet"
+            description="This artist does not have a ready song in the public catalog right now."
           />
         )}
       </section>

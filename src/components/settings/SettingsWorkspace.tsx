@@ -251,26 +251,24 @@ export function SettingsWorkspace() {
       <section className={styles.hero}>
         <div>
           <h1 className={styles.title}>Settings</h1>
-          <p className={styles.text}>Personalize the app without changing your studio or profile content.</p>
+          <p className={styles.text}>Tune this device the way you like.</p>
         </div>
       </section>
 
       <section className={styles.settingsPanel} aria-labelledby="app-settings-heading">
         <div className={styles.panelHeader}>
           <div>
-            <p className={styles.kicker}>App preferences</p>
             <h2 id="app-settings-heading" className={styles.panelTitle}>
-              Display and playback
+              App preferences
             </h2>
           </div>
-          <span className={styles.statusPill}>Saved on this device</span>
         </div>
 
         <div className={styles.settingRows}>
           <div className={styles.settingRow}>
             <div className={styles.settingCopy}>
               <h3>Dark mode</h3>
-              <p>Turn on a deeper low-light layout for the full app.</p>
+              <p>Use the darker app theme.</p>
             </div>
             <SettingSwitch
               checked={theme === "dark"}
@@ -282,7 +280,7 @@ export function SettingsWorkspace() {
           <div className={styles.settingRow}>
             <div className={styles.settingCopy}>
               <h3>Reduced motion</h3>
-              <p>Use calmer 45 FPS stepped animation instead of full-speed motion.</p>
+              <p>Use calmer motion across the app.</p>
             </div>
             <SettingSwitch
               checked={motion === "reduced"}
@@ -294,7 +292,7 @@ export function SettingsWorkspace() {
           <div className={`${styles.settingRow} ${styles.mobileOnlySetting}`}>
             <div className={styles.settingCopy}>
               <h3>Comfortable mini player</h3>
-              <p>Show artist name plus shuffle, previous, next, and repeat on phones.</p>
+              <p>Show a larger mobile mini player layout.</p>
             </div>
             <SettingSwitch
               checked={playerSize === "comfortable"}
@@ -306,7 +304,7 @@ export function SettingsWorkspace() {
           <div className={styles.settingRow}>
             <div className={styles.settingCopy}>
               <h3>Playback source labels</h3>
-              <p>Show Library, Playlist, Discover, and History chips on the mini player and full player.</p>
+              <p>Show source labels in the player.</p>
             </div>
             <SettingSwitch
               checked={sourceBadges === "on"}
@@ -318,7 +316,7 @@ export function SettingsWorkspace() {
           <div className={`${styles.settingRow} ${styles.desktopOnlySetting}`}>
             <div className={styles.settingCopy}>
               <h3>Desktop player effects</h3>
-              <p>Use animated background glow and visualizer details in the desktop full player.</p>
+              <p>Show extra desktop visual effects.</p>
             </div>
             <SettingSwitch
               checked={desktopEffects === "on"}

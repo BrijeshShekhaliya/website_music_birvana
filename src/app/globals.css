@@ -1,47 +1,85 @@
 @import "tailwindcss";
 
 :root {
-  --canvas: #f4efe6;
-  --paper: #fffaf1;
-  --ink: #171516;
-  --muted: #6e6762;
-  --line: rgba(23, 21, 22, 0.08);
-  --accent: #b86244;
-  --accent-deep: #7d3d2c;
-  --accent-soft: rgba(184, 98, 68, 0.12);
-  --shadow: 0 24px 80px rgba(24, 19, 16, 0.08);
-  --skeleton-surface: color-mix(in srgb, var(--paper) 88%, transparent);
-  --skeleton-surface-strong: color-mix(in srgb, var(--paper) 96%, transparent);
-  --skeleton-border: rgba(23, 21, 22, 0.08);
-  --skeleton-sheen: linear-gradient(90deg, rgba(23, 21, 22, 0.04), rgba(255, 255, 255, 0.38), rgba(23, 21, 22, 0.04));
+  --canvas: #eef4fb;
+  --canvas-strong: #d9e6f4;
+  --paper: rgba(255, 255, 255, 0.78);
+  --paper-strong: #f8fbff;
+  --panel: linear-gradient(180deg, rgba(255, 255, 255, 0.88), rgba(238, 246, 255, 0.97));
+  --panel-muted: rgba(255, 255, 255, 0.72);
+  --panel-elevated: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(234, 243, 252, 0.99));
+  --ink: #08121f;
+  --ink-soft: #1a2940;
+  --muted: #5a6d88;
+  --muted-strong: #394d69;
+  --line: rgba(8, 18, 31, 0.08);
+  --line-strong: rgba(8, 18, 31, 0.14);
+  --accent: #1bb6ff;
+  --accent-deep: #0a72e8;
+  --accent-soft: rgba(27, 182, 255, 0.14);
+  --accent-glow: rgba(27, 182, 255, 0.24);
+  --accent-contrast: #edf8ff;
+  --shadow: 0 28px 90px rgba(11, 26, 50, 0.14);
+  --shadow-soft: 0 16px 48px rgba(11, 26, 50, 0.1);
+  --app-surface: var(--panel);
+  --app-surface-muted: var(--panel-muted);
+  --app-surface-shadow: var(--shadow-soft);
+  --control-strong-bg: linear-gradient(135deg, #3ce3ff, #0a72e8);
+  --control-strong-text: #03131f;
+  --control-strong-border: rgba(10, 114, 232, 0.2);
+  --control-strong-shadow: rgba(10, 114, 232, 0.22);
+  --ring: 0 0 0 4px color-mix(in srgb, var(--accent-soft) 88%, transparent);
+  --skeleton-surface: color-mix(in srgb, var(--paper-strong) 88%, transparent);
+  --skeleton-surface-strong: color-mix(in srgb, var(--paper-strong) 96%, transparent);
+  --skeleton-border: rgba(19, 24, 36, 0.08);
+  --skeleton-sheen: linear-gradient(90deg, rgba(19, 24, 36, 0.03), rgba(255, 255, 255, 0.42), rgba(19, 24, 36, 0.03));
   --media-slot-surface:
-    radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 10%, transparent), transparent 46%),
-    color-mix(in srgb, var(--paper) 82%, #ede5d8);
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 18%, transparent), transparent 46%),
+    linear-gradient(160deg, rgba(248, 252, 255, 0.97), rgba(226, 236, 248, 0.98));
   --category-slot-surface:
-    linear-gradient(135deg, color-mix(in srgb, var(--accent) 34%, transparent), rgba(23, 21, 22, 0.12)),
-    rgba(250, 248, 243, 0.9);
+    linear-gradient(135deg, color-mix(in srgb, var(--accent) 30%, transparent), rgba(8, 18, 31, 0.06)),
+    rgba(248, 252, 255, 0.94);
 }
 
 html[data-theme="dark"] {
-  --canvas: #0d0f12;
-  --paper: #171a1f;
-  --ink: #f5f2ea;
-  --muted: #aaa39a;
+  --canvas: #060910;
+  --canvas-strong: #0b111b;
+  --paper: rgba(19, 24, 33, 0.88);
+  --paper-strong: #131a25;
+  --panel: linear-gradient(180deg, rgba(18, 24, 35, 0.96), rgba(8, 12, 18, 0.98));
+  --panel-muted: rgba(255, 255, 255, 0.06);
+  --panel-elevated: linear-gradient(180deg, rgba(28, 35, 48, 0.96), rgba(16, 21, 31, 0.98));
+  --ink: #f3f6fb;
+  --ink-soft: #d8e0ee;
+  --muted: #95a4ba;
+  --muted-strong: #afbccf;
   --line: rgba(255, 255, 255, 0.1);
-  --accent: #d7a466;
-  --accent-deep: #a8643f;
-  --accent-soft: rgba(215, 164, 102, 0.16);
-  --shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
-  --skeleton-surface: color-mix(in srgb, var(--paper) 58%, #050608);
-  --skeleton-surface-strong: color-mix(in srgb, var(--paper) 68%, #050608);
+  --line-strong: rgba(255, 255, 255, 0.16);
+  --accent: #37c7ff;
+  --accent-deep: #1684ff;
+  --accent-soft: rgba(55, 199, 255, 0.16);
+  --accent-glow: rgba(55, 199, 255, 0.26);
+  --accent-contrast: #08121a;
+  --shadow: 0 30px 84px rgba(0, 0, 0, 0.34);
+  --shadow-soft: 0 20px 58px rgba(0, 0, 0, 0.28);
+  --app-surface: var(--panel);
+  --app-surface-muted: var(--panel-muted);
+  --app-surface-shadow: var(--shadow-soft);
+  --control-strong-bg: linear-gradient(135deg, var(--accent), var(--accent-deep));
+  --control-strong-text: #04141e;
+  --control-strong-border: color-mix(in srgb, var(--accent) 44%, transparent);
+  --control-strong-shadow: color-mix(in srgb, var(--accent) 20%, transparent);
+  --ring: 0 0 0 4px color-mix(in srgb, var(--accent-soft) 96%, transparent);
+  --skeleton-surface: color-mix(in srgb, var(--paper-strong) 58%, #050608);
+  --skeleton-surface-strong: color-mix(in srgb, var(--paper-strong) 68%, #050608);
   --skeleton-border: rgba(255, 255, 255, 0.08);
-  --skeleton-sheen: linear-gradient(90deg, rgba(255, 255, 255, 0.016), rgba(215, 164, 102, 0.09), rgba(255, 255, 255, 0.016));
+  --skeleton-sheen: linear-gradient(90deg, rgba(255, 255, 255, 0.016), rgba(55, 199, 255, 0.1), rgba(255, 255, 255, 0.016));
   --media-slot-surface:
-    radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 12%, transparent), transparent 44%),
-    color-mix(in srgb, var(--paper) 64%, #08090b);
+    radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 14%, transparent), transparent 44%),
+    linear-gradient(160deg, rgba(19, 27, 40, 0.98), rgba(9, 15, 24, 0.98));
   --category-slot-surface:
     linear-gradient(135deg, color-mix(in srgb, var(--accent) 24%, transparent), rgba(255, 255, 255, 0.04)),
-    color-mix(in srgb, var(--paper) 66%, #08090b);
+    color-mix(in srgb, var(--paper-strong) 72%, #08090b);
 }
 
 * {
@@ -54,49 +92,70 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   overflow-x: clip;
-  background-color: #f4efe6;
+  color-scheme: light;
+  scroll-behavior: smooth;
+  background-color: var(--canvas);
   background:
-    radial-gradient(circle at top left, rgba(184, 98, 68, 0.09), transparent 24%),
-    linear-gradient(180deg, #f8f4ed 0%, #f4efe6 55%, #efe8de 100%),
-    #f4efe6;
+    radial-gradient(circle at top left, rgba(27, 182, 255, 0.18), transparent 28%),
+    radial-gradient(circle at 85% 18%, rgba(111, 224, 255, 0.18), transparent 24%),
+    linear-gradient(180deg, #fbfdff 0%, #eff5fc 48%, #dde8f4 100%);
 }
 
 html[data-theme="dark"] {
   color-scheme: dark;
-  background-color: #08090b;
+  background-color: var(--canvas);
   background:
-    radial-gradient(circle at top left, rgba(215, 164, 102, 0.11), transparent 24%),
-    linear-gradient(180deg, #0f1115 0%, #101216 55%, #08090b 100%),
-    #08090b;
+    radial-gradient(circle at top left, rgba(55, 199, 255, 0.16), transparent 26%),
+    radial-gradient(circle at 88% 14%, rgba(55, 117, 255, 0.14), transparent 22%),
+    linear-gradient(180deg, #0c1118 0%, #090d14 54%, #07090d 100%);
 }
 
 @media (prefers-color-scheme: dark) {
   html:not([data-theme]) {
-    --canvas: #0d0f12;
-    --paper: #171a1f;
-    --ink: #f5f2ea;
-    --muted: #aaa39a;
+    --canvas: #080b11;
+    --canvas-strong: #0f141d;
+    --paper: rgba(19, 24, 33, 0.88);
+    --paper-strong: #161d28;
+    --panel: linear-gradient(180deg, rgba(21, 27, 38, 0.94), rgba(11, 15, 22, 0.98));
+    --panel-muted: rgba(255, 255, 255, 0.06);
+    --panel-elevated: linear-gradient(180deg, rgba(28, 35, 48, 0.96), rgba(16, 21, 31, 0.98));
+    --ink: #f3f6fb;
+    --ink-soft: #d8e0ee;
+    --muted: #95a4ba;
+    --muted-strong: #afbccf;
     --line: rgba(255, 255, 255, 0.1);
-    --accent: #d7a466;
-    --accent-deep: #a8643f;
-    --accent-soft: rgba(215, 164, 102, 0.16);
-    --shadow: 0 24px 80px rgba(0, 0, 0, 0.34);
-    --skeleton-surface: color-mix(in srgb, var(--paper) 58%, #050608);
-    --skeleton-surface-strong: color-mix(in srgb, var(--paper) 68%, #050608);
+    --line-strong: rgba(255, 255, 255, 0.16);
+    --accent: #37c7ff;
+    --accent-deep: #1684ff;
+    --accent-soft: rgba(55, 199, 255, 0.16);
+    --accent-glow: rgba(55, 199, 255, 0.26);
+    --accent-contrast: #08121a;
+    --shadow: 0 30px 84px rgba(0, 0, 0, 0.34);
+    --shadow-soft: 0 20px 58px rgba(0, 0, 0, 0.28);
+    --app-surface: var(--panel);
+    --app-surface-muted: var(--panel-muted);
+    --app-surface-shadow: var(--shadow-soft);
+    --control-strong-bg: linear-gradient(135deg, var(--accent), var(--accent-deep));
+    --control-strong-text: #1f130a;
+    --control-strong-border: color-mix(in srgb, var(--accent) 44%, transparent);
+    --control-strong-shadow: color-mix(in srgb, var(--accent) 20%, transparent);
+    --ring: 0 0 0 4px color-mix(in srgb, var(--accent-soft) 96%, transparent);
+    --skeleton-surface: color-mix(in srgb, var(--paper-strong) 58%, #050608);
+    --skeleton-surface-strong: color-mix(in srgb, var(--paper-strong) 68%, #050608);
     --skeleton-border: rgba(255, 255, 255, 0.08);
-    --skeleton-sheen: linear-gradient(90deg, rgba(255, 255, 255, 0.016), rgba(215, 164, 102, 0.09), rgba(255, 255, 255, 0.016));
+    --skeleton-sheen: linear-gradient(90deg, rgba(255, 255, 255, 0.016), rgba(55, 199, 255, 0.1), rgba(255, 255, 255, 0.016));
     --media-slot-surface:
-      radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 12%, transparent), transparent 44%),
-      color-mix(in srgb, var(--paper) 64%, #08090b);
+      radial-gradient(circle at top left, color-mix(in srgb, var(--accent) 14%, transparent), transparent 44%),
+      linear-gradient(160deg, rgba(19, 27, 40, 0.98), rgba(9, 15, 24, 0.98));
     --category-slot-surface:
       linear-gradient(135deg, color-mix(in srgb, var(--accent) 24%, transparent), rgba(255, 255, 255, 0.04)),
-      color-mix(in srgb, var(--paper) 66%, #08090b);
+      color-mix(in srgb, var(--paper-strong) 72%, #08090b);
     color-scheme: dark;
-    background-color: #08090b;
+    background-color: var(--canvas);
     background:
-      radial-gradient(circle at top left, rgba(215, 164, 102, 0.11), transparent 24%),
-      linear-gradient(180deg, #0f1115 0%, #101216 55%, #08090b 100%),
-      #08090b;
+      radial-gradient(circle at top left, rgba(55, 199, 255, 0.16), transparent 26%),
+      radial-gradient(circle at 88% 14%, rgba(55, 117, 255, 0.14), transparent 22%),
+      linear-gradient(180deg, #0c1118 0%, #090d14 54%, #07090d 100%);
   }
 }
 
@@ -104,9 +163,41 @@ body {
   min-height: 100vh;
   margin: 0;
   color: var(--ink);
-  font-family: var(--font-inter), sans-serif;
+  font-family: var(--font-manrope), sans-serif;
   background: transparent;
   overflow-x: clip;
+  position: relative;
+  text-rendering: optimizeLegibility;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: auto;
+  pointer-events: none;
+  z-index: -1;
+  filter: blur(24px);
+}
+
+body::before {
+  top: -8rem;
+  right: -6rem;
+  width: 28rem;
+  height: 28rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent-glow) 92%, transparent) 0%, transparent 72%);
+  opacity: 0.9;
+}
+
+body::after {
+  left: -10rem;
+  bottom: 8vh;
+  width: 30rem;
+  height: 30rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent-soft) 88%, transparent) 0%, transparent 72%);
+  opacity: 0.9;
 }
 
 @media (min-width: 1440px) {
@@ -143,6 +234,20 @@ input,
 textarea,
 select {
   font: inherit;
+}
+
+button {
+  transition:
+    transform 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease,
+    opacity 180ms ease;
+}
+
+button:active {
+  transform: translateY(1px) scale(0.985);
 }
 
 img {
@@ -185,7 +290,33 @@ html[data-theme="dark"] img[data-loading="true"] {
 }
 
 ::selection {
-  background: rgba(184, 98, 68, 0.24);
+  background: color-mix(in srgb, var(--accent-soft) 100%, transparent);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--muted) 34%, transparent);
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--muted) 52%, transparent);
+  background-clip: padding-box;
 }
 
 html[data-motion="reduced"] *,
@@ -193,8 +324,10 @@ html[data-motion="reduced"] *::before,
 html[data-motion="reduced"] *::after {
   scroll-behavior: auto !important;
   transition-duration: 120ms !important;
-  transition-timing-function: steps(6, end) !important;
-  animation-timing-function: steps(45, end) !important;
+  transition-timing-function: linear !important;
+  animation-duration: 1ms !important;
+  animation-iteration-count: 1 !important;
+  animation-timing-function: linear !important;
 }
 
 html[data-motion="reduced"] img[data-loading="true"] {

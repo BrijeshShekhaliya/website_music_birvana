@@ -1,12 +1,11 @@
 import type { Metadata, Viewport } from "next";
 import { cookies } from "next/headers";
-import { Inter, Space_Grotesk } from "next/font/google";
-import Script from "next/script";
+import { Manrope, Space_Grotesk } from "next/font/google";
 import { AppProviders } from "@/components/shared/AppProviders";
 import "./globals.css";
 
-const inter = Inter({
-  variable: "--font-inter",
+const manrope = Manrope({
+  variable: "--font-manrope",
   subsets: ["latin"],
 });
 
@@ -17,7 +16,7 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "BIRVANA",
-  description: "Modern music streaming with mobile-first listening, playlists, and studio tools.",
+  description: "Modern music streaming with mobile-first listening, playlists, and artist discovery.",
 };
 
 export const viewport: Viewport = {
@@ -95,7 +94,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} ${spaceGrotesk.variable}`}
+      className={`${manrope.variable} ${spaceGrotesk.variable}`}
       data-theme={savedTheme}
       data-motion={savedMotion}
       data-player-size={savedPlayerSize}
@@ -103,13 +102,11 @@ export default async function RootLayout({
       data-desktop-effects={savedDesktopEffects}
       suppressHydrationWarning
     >
+      <head>
+        <script id="birvana-preference-bootstrap" dangerouslySetInnerHTML={{ __html: preferenceBootstrapScript }} />
+      </head>
       <body>
         <AppProviders>{children}</AppProviders>
-        <Script
-          id="birvana-preference-bootstrap"
-          strategy="beforeInteractive"
-          dangerouslySetInnerHTML={{ __html: preferenceBootstrapScript }}
-        />
       </body>
     </html>
   );

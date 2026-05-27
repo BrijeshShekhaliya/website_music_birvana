@@ -3,10 +3,11 @@ import "server-only";
 import { cache } from "react";
 import { unstable_cache } from "next/cache";
 import { createClient } from "@supabase/supabase-js";
+import { buildArtistCatalog, getArtistFromCatalog } from "@/lib/artists/catalog";
 import { DATA_CACHE_TAGS } from "@/lib/cache-tags";
 import { getPublicSupabaseEnv, hasSupabaseEnv } from "@/lib/env";
 import { getAdminSupabase, getServerSupabase } from "@/lib/supabase/server";
-import type { Album, Playlist, PlaylistTrack, Profile, ProfileOverview, Track } from "@/types/models";
+import type { ArtistProfile, Playlist, PlaylistTrack, Profile, ProfileOverview, Track } from "@/types/models";
 
 type DiscoverData = {
   tracks: Track[];
@@ -90,8 +91,6 @@ const ARTIST_CARD_FIELDS = [
   "followers_count",
   "songs_count",
 ].join(",");
-
-const ALBUM_LIST_FIELDS = ["id", "title", "release_date"].join(",");
 
 async function getPublicCacheSupabase(): Promise<SupabaseQueryClient | null> {
   if (!hasSupabaseEnv()) {
@@ -315,38 +314,31 @@ async function fetchLikedTracks(supabase: SupabaseQueryClient, userId: string) {
   return songIds.map((id) => trackMap.get(id)).filter(Boolean) as Track[];
 }
 
-async function fetchArtists(supabase: SupabaseQueryClient) {
-  const { data } = await supabase
-    .from("profiles")
-    .select(ARTIST_CARD_FIELDS)
-    .eq("is_artist", true)
-    .order("followers_count", { ascending: false })
-    .limit(18);
+async function fetchArtists(supabase: SupabaseQueryClient): Promise<ArtistProfile[]> {
+  const { tracks } = await fetchDiscoverData(supabase);
 
-  return (data as Profile[] | null) ?? [];
+  return buildArtistCatalog(tracks).map((entry) => {
+    const { tracks: catalogTracks, ...artist } = entry;
+    return {
+      ...artist,
+      song_titles: catalogTracks.map((track) => track.title),
+    };
+  });
 }
 
-async function fetchArtistDetail(supabase: SupabaseQueryClient, artistId: string) {
-  const [artistResult, tracksResult, albumsResult] = await Promise.all([
-    supabase.from("profiles").select("id,display_name,bio").eq("id", artistId).maybeSingle(),
-    supabase
-      .from("songs")
-      .select(TRACK_CARD_FIELDS)
-      .eq("artist_id", artistId)
-      .eq("status", "ready")
-      .not("audio_path", "is", null)
-      .order("created_at", { ascending: false }),
-    supabase
-      .from("albums")
-      .select(ALBUM_LIST_FIELDS)
-      .eq("artist_id", artistId)
-      .order("release_date", { ascending: false }),
-  ]);
+async function fetchArtistDetail(supabase: SupabaseQueryClient, artistSlug: string) {
+  const { tracks } = await fetchDiscoverData(supabase);
+  const artist = getArtistFromCatalog(tracks, artistSlug);
+
+  if (!artist) {
+    return { artist: null, tracks: [] as Track[] };
+  }
+
+  const { tracks: artistTracks, ...artistProfile } = artist;
 
   return {
-    artist: (artistResult.data as Profile | null) ?? null,
-    tracks: (tracksResult.data as Track[] | null) ?? [],
-    albums: (albumsResult.data as Album[] | null) ?? [],
+    artist: artistProfile,
+    tracks: artistTracks,
   };
 }
 
@@ -455,7 +447,7 @@ const getCachedArtists = unstable_cache(
 const getCachedArtistDetail = unstable_cache(
   async (artistId: string) => {
     const supabase = await getPublicCacheSupabase();
-    return supabase ? fetchArtistDetail(supabase, artistId) : { artist: null, tracks: [], albums: [] };
+    return supabase ? fetchArtistDetail(supabase, artistId) : { artist: null, tracks: [] };
   },
   ["artist-detail"],
   { tags: [DATA_CACHE_TAGS.artists, DATA_CACHE_TAGS.tracks, DATA_CACHE_TAGS.profile], revalidate: 1800 },
@@ -541,13 +533,19 @@ export const getProfileOverview = cache(async (userId: string): Promise<ProfileO
 });
 
 export const getDiscoverData = cache(async (): Promise<DiscoverData> => {
-  const supabase = await getServerSupabase();
+  const supabase = await getPublicCacheSupabase();
 
   if (!supabase) {
     return { tracks: [], playlists: [] };
   }
 
-  return getCachedDiscoverData();
+  const cached = await getCachedDiscoverData();
+
+  if (cached.tracks.length > 0 || cached.playlists.length > 0) {
+    return cached;
+  }
+
+  return fetchDiscoverData(supabase);
 });
 
 export const getEngagementState = cache(async ({
@@ -597,23 +595,35 @@ export const getLikedTracks = cache(async (userId: string) => {
 });
 
 export const getArtists = cache(async () => {
-  const supabase = await getServerSupabase();
+  const supabase = await getPublicCacheSupabase();
 
   if (!supabase) {
     return [];
   }
 
-  return getCachedArtists();
+  const cached = await getCachedArtists();
+
+  if (cached.length > 0) {
+    return cached;
+  }
+
+  return fetchArtists(supabase);
 });
 
 export const getArtistDetail = cache(async (artistId: string) => {
-  const supabase = await getServerSupabase();
+  const supabase = await getPublicCacheSupabase();
 
   if (!supabase) {
-    return { artist: null, tracks: [], albums: [] };
+    return { artist: null, tracks: [] };
   }
 
-  return getCachedArtistDetail(artistId);
+  const cached = await getCachedArtistDetail(artistId);
+
+  if (cached.artist || cached.tracks.length > 0) {
+    return cached;
+  }
+
+  return fetchArtistDetail(supabase, artistId);
 });
 
 export const getPlaylistDetail = cache(async (playlistId: string) => {

@@ -1,10 +1,11 @@
 :root {
-  --player-ink: #171516;
-  --player-ink-soft: rgba(23, 21, 22, 0.68);
-  --player-ink-faint: rgba(23, 21, 22, 0.42);
-  --player-light-surface: rgba(255, 250, 241, 0.84);
-  --player-light-shell: linear-gradient(180deg, rgba(255, 250, 241, 0.94), rgba(245, 239, 230, 0.9));
-  --player-light-border: rgba(23, 21, 22, 0.08);
+  --player-ink: var(--ink);
+  --player-ink-soft: color-mix(in srgb, var(--ink) 68%, transparent);
+  --player-ink-faint: color-mix(in srgb, var(--muted-strong) 72%, transparent);
+  --player-light-surface: color-mix(in srgb, var(--paper) 90%, transparent);
+  --player-light-shell:
+    linear-gradient(180deg, color-mix(in srgb, var(--paper-strong) 98%, transparent), color-mix(in srgb, var(--paper) 90%, transparent));
+  --player-light-border: color-mix(in srgb, var(--line-strong) 82%, transparent);
   --player-dark-surface: rgba(18, 17, 20, 0.82);
   --player-dark-panel: linear-gradient(180deg, rgba(20, 18, 22, 0.5), rgba(11, 10, 12, 0.86));
   --player-dark-border: rgba(255, 255, 255, 0.08);
@@ -12,10 +13,10 @@
   --player-dark-text-soft: rgba(255, 255, 255, 0.78);
   --player-dark-text-faint: rgba(255, 255, 255, 0.54);
   --player-radius: 1.5rem;
-  --player-slider-track: rgba(23, 21, 22, 0.12);
-  --player-slider-fill: #171516;
-  --player-slider-thumb: #171516;
-  --player-slider-shadow: rgba(23, 21, 22, 0.14);
+  --player-slider-track: color-mix(in srgb, var(--line-strong) 72%, transparent);
+  --player-slider-fill: var(--accent-deep);
+  --player-slider-thumb: var(--accent-deep);
+  --player-slider-shadow: color-mix(in srgb, var(--accent) 20%, transparent);
   --artwork-rgb: 76 118 132;
   --artwork-image: none;
   --mobile-player-safe-area: max(calc(10.9rem + env(safe-area-inset-bottom)), 19vh);
@@ -64,7 +65,7 @@
   background: var(--player-light-shell);
   backdrop-filter: blur(18px) saturate(140%);
   box-shadow:
-    0 18px 48px rgba(37, 30, 24, 0.1),
+    0 18px 48px color-mix(in srgb, var(--ink) 12%, transparent),
     inset 0 1px 0 rgba(255, 255, 255, 0.55);
 }
 
@@ -141,15 +142,15 @@
 
 .cover,
 .miniCover {
-  box-shadow: 0 10px 24px rgba(17, 15, 14, 0.12);
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--ink) 14%, transparent);
 }
 
 .coverFallback,
 .mobileArtworkFallback {
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, #242126, #3a353d);
-  color: white;
+  background: var(--control-strong-bg);
+  color: var(--control-strong-text);
   font-family: var(--font-space-grotesk), sans-serif;
   font-weight: 700;
 }
@@ -433,12 +434,12 @@
   position: absolute;
   right: -0.25rem;
   bottom: -0.25rem;
-  color: #fff9f0;
-  border-color: rgba(255, 255, 255, 0.42);
-  background: linear-gradient(180deg, rgba(23, 21, 22, 0.86), rgba(10, 9, 10, 0.94));
+  color: var(--control-strong-text);
+  border-color: var(--control-strong-border);
+  background: var(--control-strong-bg);
   box-shadow:
-    0 8px 18px rgba(0, 0, 0, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    0 8px 18px var(--control-strong-shadow),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 :global(html[data-source-badges="off"]) .sourceChip {
@@ -446,18 +447,18 @@
 }
 
 .modeActive {
-  background: rgba(255, 255, 255, 0.96);
-  color: var(--player-ink);
-  border-color: rgba(23, 21, 22, 0.14);
-  box-shadow: 0 8px 20px rgba(21, 18, 16, 0.08);
+  background: var(--control-strong-bg);
+  color: var(--control-strong-text);
+  border-color: var(--control-strong-border);
+  box-shadow: 0 8px 20px var(--control-strong-shadow);
 }
 
 .desktopBar .modeActive,
 .mobileMini .modeActive {
-  background: linear-gradient(180deg, rgba(23, 21, 22, 0.96), rgba(10, 10, 12, 0.96));
-  color: rgba(255, 255, 255, 0.96);
-  border-color: rgba(23, 21, 22, 0.2);
-  box-shadow: 0 12px 24px rgba(18, 15, 14, 0.14);
+  background: var(--control-strong-bg);
+  color: var(--control-strong-text);
+  border-color: var(--control-strong-border);
+  box-shadow: 0 12px 24px var(--control-strong-shadow);
 }
 
 :global(html[data-theme="dark"]) .desktopBar,
@@ -514,17 +515,17 @@
   width: 40px;
   height: 40px;
   border: 1px solid var(--player-light-border);
-  background: rgba(255, 255, 255, 0.72);
+  background: color-mix(in srgb, var(--paper-strong) 90%, transparent);
   color: var(--player-ink);
 }
 
 .primaryButton {
   width: 52px;
   height: 52px;
-  border: 1px solid rgba(23, 21, 22, 0.08);
-  background: linear-gradient(180deg, rgba(26, 24, 26, 0.96), rgba(12, 11, 12, 0.96));
-  color: white;
-  box-shadow: 0 14px 28px rgba(18, 15, 14, 0.18);
+  border: 1px solid var(--control-strong-border);
+  background: var(--control-strong-bg);
+  color: var(--control-strong-text);
+  box-shadow: 0 14px 28px var(--control-strong-shadow);
 }
 
 .iconButton:hover,
@@ -548,7 +549,7 @@
   width: 3px;
   height: 16px;
   border-radius: 999px;
-  background: rgba(23, 21, 22, 0.34);
+  background: color-mix(in srgb, var(--muted) 52%, transparent);
   transform: scaleY(0.55) translateZ(0);
   transform-origin: bottom;
   transition:

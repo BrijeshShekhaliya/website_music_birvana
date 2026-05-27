@@ -1,8 +1,7 @@
 import Link from "next/link";
-import { CalendarDays, ChevronRight, Disc3, Gauge, Music2, ShieldCheck, Sparkles, UploadCloud } from "lucide-react";
+import { CalendarDays, Heart, Library, ShieldCheck, Users } from "lucide-react";
 import { ProfileEditModal } from "@/components/profile/ProfileEditModal";
 import { LazyImage } from "@/components/shared/LazyImage";
-import { compactNumber } from "@/lib/format";
 import type { ProfileOverview } from "@/types/models";
 import styles from "./ProfileWorkspace.module.css";
 
@@ -27,8 +26,14 @@ function getInitials(name: string) {
     .join("") || "B";
 }
 
-export function ProfileWorkspace({ overview, email }: { overview: ProfileOverview; email: string }) {
-  const { profile, stats } = overview;
+export function ProfileWorkspace({
+  overview,
+  email,
+}: {
+  overview: ProfileOverview;
+  email: string;
+}) {
+  const { profile } = overview;
 
   if (!profile) {
     return (
@@ -40,10 +45,9 @@ export function ProfileWorkspace({ overview, email }: { overview: ProfileOvervie
   }
 
   const identity = profile.username ? `@${profile.username}` : email;
-  const totalActivity = stats.uploadedTracks + stats.ownedPlaylists + stats.likedSongs + stats.savedPlaylists;
   const displayNameNeedsReview = profile.display_name.includes(",") && !profile.username;
   const displayName = displayNameNeedsReview ? "Your Birvana profile" : profile.display_name;
-  const accountType = profile.verified_artist ? "Verified artist" : profile.is_artist ? "Artist account" : "Listener";
+  const accountType = "Listener";
 
   return (
     <div className={styles.page}>
@@ -76,75 +80,37 @@ export function ProfileWorkspace({ overview, email }: { overview: ProfileOvervie
         </div>
 
         <div className={styles.heroActions}>
-          <Link href="/studio/upload" className={styles.primaryAction}>
-            <UploadCloud size={17} strokeWidth={2} />
-            Studio
-          </Link>
           <ProfileEditModal profile={profile} triggerClassName={styles.secondaryAction} />
-        </div>
-      </section>
-
-      {displayNameNeedsReview ? (
-        <section className={styles.notice}>
-          <Sparkles size={18} strokeWidth={2} />
-          <div>
-            <strong>Profile name needs review</strong>
-            <p>Your display name looks like song artist metadata. Update it below so the account looks correct.</p>
-          </div>
-        </section>
-      ) : null}
-
-      <section className={styles.statsStrip} aria-label="Profile stats">
-        <div className={styles.statItem}>
-          <span>Tracks uploaded</span>
-          <strong>{compactNumber(stats.uploadedTracks)}</strong>
-          <small>{compactNumber(stats.publicTracks)} public</small>
-        </div>
-        <div className={styles.statItem}>
-          <span>Total plays</span>
-          <strong>{compactNumber(stats.totalPlays)}</strong>
-          <small>{compactNumber(stats.totalLikes)} likes on uploads</small>
-        </div>
-        <div className={styles.statItem}>
-          <span>Playlists</span>
-          <strong>{compactNumber(stats.ownedPlaylists)}</strong>
-          <small>{compactNumber(stats.publicPlaylists)} public</small>
-        </div>
-        <div className={styles.statItem}>
-          <span>Library</span>
-          <strong>{compactNumber(totalActivity)}</strong>
-          <small>{compactNumber(stats.likedSongs)} liked, {compactNumber(stats.savedPlaylists)} saved</small>
+          <Link href="/library" className={styles.primaryAction}>
+            Open library
+          </Link>
         </div>
       </section>
 
       <div className={styles.contentGrid}>
-        <section className={`${styles.panel} ${styles.studioPanel}`}>
+        <section className={styles.panel}>
           <div className={styles.panelHeader}>
             <div>
-              <p className={styles.panelEyebrow}>Studio</p>
-              <h2>Creator workspace</h2>
+              <p className={styles.panelEyebrow}>Shortcuts</p>
+              <h2>Open faster</h2>
             </div>
           </div>
 
-          <Link href="/studio/upload" className={styles.studioBanner}>
-            <Gauge size={20} strokeWidth={2} />
-            <span>
-              <strong>Open Studio</strong>
-              <small>Upload music, manage covers, and organize your public catalog.</small>
-            </span>
-            <ChevronRight size={18} strokeWidth={2.2} />
-          </Link>
-
           <div className={styles.quickLinks}>
-            <Link href="/studio/tracks">
-              <Music2 size={18} strokeWidth={2} />
-              <span>Track manager</span>
-              <small>{compactNumber(stats.readyTracks)} ready tracks</small>
+            <Link href="/library">
+              <Library size={18} />
+              <span>Library</span>
+              <small>Playlists and saved mixes.</small>
             </Link>
-            <Link href="/studio/playlists">
-              <Disc3 size={18} strokeWidth={2} />
-              <span>Playlist studio</span>
-              <small>{compactNumber(stats.publicPlaylists)} public collections</small>
+            <Link href="/liked">
+              <Heart size={18} />
+              <span>Liked songs</span>
+              <small>Your saved songs.</small>
+            </Link>
+            <Link href="/artists">
+              <Users size={18} />
+              <span>Artists</span>
+              <small>Browse artist pages.</small>
             </Link>
           </div>
         </section>
@@ -163,8 +129,8 @@ export function ProfileWorkspace({ overview, email }: { overview: ProfileOvervie
               <strong>{displayName}</strong>
             </div>
             <div className={styles.detailItem}>
-              <span>Identity</span>
-              <strong>{identity}</strong>
+              <span>Email</span>
+              <strong>{email}</strong>
             </div>
             <div className={styles.detailItem}>
               <span>Account type</span>

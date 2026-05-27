@@ -2,7 +2,7 @@
 
 import clsx from "clsx";
 import Link from "next/link";
-import { Disc3, Headphones, Radio } from "lucide-react";
+import { Disc3, Headphones } from "lucide-react";
 import styles from "./PlaylistCard.module.css";
 import { compactNumber } from "@/lib/format";
 import { PlaylistSaveButton } from "@/components/shared/PlaylistSaveButton";
@@ -20,21 +20,16 @@ export function PlaylistCard({
   showSaveButton?: boolean;
   size?: "default" | "compact" | "discover" | "library";
 }) {
-  const playlistLabel =
-    playlist.visibility === "public"
-      ? "Public collection"
-      : playlist.visibility === "unlisted"
-        ? "Unlisted mix"
-        : "Private set";
+  const playlistLabel = size === "library" ? "Playlist" : "Collection";
   const description =
     playlist.description
     || (size === "compact"
-      ? "Ready for the next listening session."
+      ? "Built for the next session."
       : size === "library"
-        ? "Ready to jump back into."
+        ? "Open and keep listening."
       : size === "discover"
-        ? "A quick mix to drop into right now."
-        : "A curated mix built for repeat plays.");
+        ? "Start here."
+        : "Curated for repeat listening.");
 
   return (
     <article
@@ -74,13 +69,10 @@ export function PlaylistCard({
           </div>
         </div>
 
-        <div className={styles.body}>
-          <div className={styles.copy}>
+          <div className={styles.body}>
+            <div className={styles.copy}>
             <div className={styles.kickerRow}>
               <span className={styles.kicker}>{playlistLabel}</span>
-              {playlist.play_count > 0 ? (
-                <span className={styles.kickerValue}>{compactNumber(playlist.play_count)} plays</span>
-              ) : null}
             </div>
             <p className={styles.name}>{playlist.name}</p>
             <p className={styles.description}>{description}</p>
@@ -95,12 +87,6 @@ export function PlaylistCard({
               <Headphones size={14} strokeWidth={1.9} />
               <span>{compactNumber(playlist.follower_count)} saves</span>
             </span>
-            {(size === "default" || size === "library") && playlist.play_count > 0 ? (
-              <span className={styles.metaPill}>
-                <Radio size={14} strokeWidth={1.9} />
-                <span>{compactNumber(playlist.play_count)} plays</span>
-              </span>
-            ) : null}
           </div>
         </div>
       </Link>

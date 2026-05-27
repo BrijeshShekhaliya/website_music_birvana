@@ -19,7 +19,6 @@
 }
 
 .eyebrow,
-.statLabel,
 .metricLabel {
   margin: 0;
   font-size: 0.74rem;
@@ -55,47 +54,10 @@
   font-weight: 700;
 }
 
-.overview {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
-.statCard {
-  display: inline-grid;
-  grid-template-columns: auto auto;
-  align-items: baseline;
-  column-gap: 0.55rem;
-  row-gap: 0.08rem;
-  min-height: 2.85rem;
-  padding: 0.52rem 0.82rem;
-  border: 1px solid rgba(23, 21, 22, 0.08);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-}
-
-.statValue {
-  font-family: var(--font-space-grotesk), sans-serif;
-  font-size: 1.05rem;
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-}
-
-.statLabel {
-  grid-row: 1;
-  font-size: 0.65rem;
-  letter-spacing: 0.18em;
-}
-
 .statMeta,
 .managerMeta,
 .artist {
   color: var(--muted);
-}
-
-.statMeta {
-  grid-column: 1 / -1;
-  font-size: 0.82rem;
 }
 
 .manager {
@@ -226,7 +188,7 @@
 
 .rowBody {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) auto auto;
+  grid-template-columns: minmax(0, 1fr) auto;
   gap: 0.8rem;
   align-items: center;
   min-width: 0;
@@ -263,48 +225,20 @@
   color: var(--muted);
 }
 
-.pills {
-  display: grid;
-  grid-template-columns: repeat(2, max-content);
-  gap: 0.45rem;
+.metaLine {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 0.7rem;
+  align-items: center;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.82rem;
 }
 
-.mobileMeta {
-  display: none;
-}
-
-.pill {
+.metaLine span {
   display: inline-flex;
   align-items: center;
-  gap: 0.34rem;
-  min-height: 1.9rem;
-  padding: 0.24rem 0.6rem;
-  border-radius: 999px;
-  border: 1px solid rgba(23, 21, 22, 0.08);
-  background: rgba(255, 255, 255, 0.66);
-  color: var(--muted);
-  font-size: 0.8rem;
-  text-transform: capitalize;
-}
-
-.metrics {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(3.6rem, auto));
-  gap: 0.7rem;
-  text-align: right;
-}
-
-.metrics div {
-  display: grid;
-  gap: 0.18rem;
-}
-
-.metrics strong {
-  font-family: var(--font-space-grotesk), sans-serif;
-  font-size: 1rem;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: -0.02em;
+  gap: 0.28rem;
 }
 
 .rowActions {
@@ -414,11 +348,9 @@
   color: #f5f2ea;
 }
 
-:global(html[data-theme="dark"]) .statCard,
 :global(html[data-theme="dark"]) .filterChip,
 :global(html[data-theme="dark"]) .searchField,
 :global(html[data-theme="dark"]) .row,
-:global(html[data-theme="dark"]) .pill,
 :global(html[data-theme="dark"]) .emptyFilter,
 :global(html[data-theme="dark"]) .cancelButton {
   border-color: rgba(255, 255, 255, 0.1);
@@ -491,15 +423,6 @@
     gap: 0.7rem;
   }
 
-  .rowBody {
-    grid-template-columns: minmax(0, 1fr) auto;
-    gap: 0.65rem;
-  }
-
-  .metrics {
-    display: none;
-  }
-
   .rowActions {
     grid-column: 2;
     grid-row: 1;
@@ -514,10 +437,6 @@
 
   .heroTitle {
     font-size: clamp(2rem, 8.6vw, 2.65rem);
-  }
-
-  .overview {
-    display: none;
   }
 
   .managerHeader {
@@ -554,41 +473,8 @@
     max-width: 100%;
   }
 
-  .mobileMeta {
-    display: flex;
-    align-items: center;
-    gap: 0.45rem;
-    color: var(--muted);
-    font-size: 0.82rem;
-  }
-
-  .mobileMeta strong {
-    font-family: var(--font-space-grotesk), sans-serif;
-    color: var(--muted);
-    font-size: 0.95rem;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-  }
-
-  .mobileMeta span::before {
-    content: "";
-    display: inline-block;
-    width: 0.28rem;
-    height: 0.28rem;
-    margin-right: 0.45rem;
-    border-radius: 999px;
-    background: currentColor;
-    vertical-align: middle;
-  }
-
-  .pills {
-    display: none;
-  }
-
-  .pill {
-    min-height: 1.55rem;
-    padding: 0.16rem 0.45rem;
-    font-size: 0.72rem;
+  .metaLine {
+    font-size: 0.78rem;
   }
 
   .deleteActions {

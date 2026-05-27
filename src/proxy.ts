@@ -3,7 +3,6 @@ import { createServerClient } from "@supabase/ssr";
 import { getPublicSupabaseEnv, hasSupabaseEnv } from "@/lib/env";
 
 const protectedPrefixes = [
-  "/discover",
   "/library",
   "/liked",
   "/artists",
@@ -11,7 +10,6 @@ const protectedPrefixes = [
   "/playlist",
   "/profile",
   "/settings",
-  "/studio",
 ];
 
 const authRoutes = new Set(["/login", "/register"]);
@@ -75,7 +73,6 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    "/discover/:path*",
     "/library/:path*",
     "/liked/:path*",
     "/artists/:path*",
@@ -83,7 +80,6 @@ export const config = {
     "/playlist/:path*",
     "/profile/:path*",
     "/settings/:path*",
-    "/studio/:path*",
     "/login",
     "/register",
   ],

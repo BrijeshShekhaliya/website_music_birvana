@@ -17,6 +17,10 @@ export function getBrowserSupabase() {
 
   const { url, anonKey } = getPublicSupabaseEnv();
 
-  browserClient = createBrowserClient(url!, anonKey!);
+  browserClient = createBrowserClient(url!, anonKey!, {
+    auth: {
+      flowType: "pkce",
+    },
+  });
   return browserClient;
 }

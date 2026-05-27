@@ -3,7 +3,12 @@
   align-items: end;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1.1rem;
+  margin-bottom: 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: 1.35rem;
+  background: var(--app-surface);
+  box-shadow: var(--app-surface-shadow);
 }
 
 .side {
@@ -44,12 +49,11 @@
   border-radius: 999px;
   padding: 0.65rem 0.95rem;
   border: 1px solid var(--line);
-  background: rgba(255, 255, 255, 0.78);
+  background: var(--app-surface-muted);
 }
 
 :global(html[data-theme="dark"]) .action {
   border-color: rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.08);
   color: var(--ink);
 }
 
@@ -57,6 +61,8 @@
   .wrap {
     align-items: start;
     flex-direction: column;
+    padding: 0.9rem;
+    border-radius: 1.1rem;
   }
 
   .side {
