@@ -23,10 +23,10 @@ import { AppFooter } from "@/components/shared/AppFooter";
 import { BrandLockup } from "@/components/shared/BrandLockup";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { ThemeToggleButton } from "@/components/shared/ThemeToggleButton";
-import { resolveTrackCategory, type MusicCategory } from "@/lib/music/categories";
-import { formatDuration } from "@/lib/format";
-import { searchPlaylists, searchTracks } from "@/lib/search";
 import { usePlayer } from "@/components/player/PlayerProvider";
+import { formatDuration } from "@/lib/format";
+import { resolveTrackCategory, type MusicCategory } from "@/lib/music/categories";
+import { searchPlaylists, searchTracks } from "@/lib/search";
 import type { Playlist, Track } from "@/types/models";
 import styles from "./PublicGuestExperience.module.css";
 
@@ -276,9 +276,12 @@ export function PublicGuestExperience({
 
   const leadPlaylist = featuredPlaylists[0];
   const spotlightTracks = categoryTracks.slice(0, 6);
+  const heroTracks = topTracks.slice(0, 3);
+  const heroArtwork = leadPlaylist?.cover_url ?? heroTracks[0]?.cover_url ?? spotlightTracks[0]?.cover_url ?? null;
 
   const authorizeGuestTrack = async (track: Track) => {
     if (guestState.playedTrackIds.includes(track.id)) {
+      playTracks([track], 0, `guest-preview:${track.id}`);
       return true;
     }
 
@@ -300,11 +303,11 @@ export function PublicGuestExperience({
       return false;
     }
 
-    setGuestState({
-      limit: typeof payload.limit === "number" ? payload.limit : guestLimitFallback,
-      playedTrackIds: Array.isArray(payload.playedTrackIds) ? payload.playedTrackIds : guestState.playedTrackIds,
-      remaining: typeof payload.remaining === "number" ? payload.remaining : guestState.remaining,
-    });
+    setGuestState((current) => ({
+      limit: typeof payload.limit === "number" ? payload.limit : current.limit,
+      playedTrackIds: Array.isArray(payload.playedTrackIds) ? payload.playedTrackIds : current.playedTrackIds,
+      remaining: typeof payload.remaining === "number" ? payload.remaining : current.remaining,
+    }));
 
     if (!payload.allowed) {
       setAuthPromptOpen(true);
@@ -312,7 +315,7 @@ export function PublicGuestExperience({
     }
 
     playTracks([track], 0, `guest-preview:${track.id}`);
-    return false;
+    return true;
   };
 
   return (
@@ -321,9 +324,9 @@ export function PublicGuestExperience({
         <div className={styles.nav}>
           <BrandLockup className={styles.brand} />
           <div className={styles.navActions}>
-            <Link className={styles.navGhost} href="#discover-preview">
+            <a className={styles.navGhost} href="#discover-preview">
               Explore
-            </Link>
+            </a>
             <Link className={styles.navGhost} href="/about">
               About
             </Link>
@@ -341,15 +344,15 @@ export function PublicGuestExperience({
           <div className={styles.heroCopy}>
             <span className={styles.heroBadge}>
               <Sparkles size={14} />
-              AI-powered discovery
+              Guest preview
             </span>
-            <p className={styles.eyebrow}>Public landing</p>
+            <p className={styles.eyebrow}>Open the catalog first</p>
             <h1 className={styles.title}>
-              Find the next track
-              <span> faster</span>
+              Start with the music,
+              <span> not the login screen</span>
             </h1>
             <p className={styles.subtitle}>
-              Preview music instantly, browse by lane, and move into the full app when you are ready.
+              Search, preview tracks, and open playlists instantly. Sign in only when you want the full listening flow.
             </p>
 
             <div className={styles.ctaRow}>
@@ -357,28 +360,60 @@ export function PublicGuestExperience({
                 Start free
               </Link>
               <a className={styles.secondaryCta} href="#discover-preview">
-                Explore now
+                Browse now
               </a>
             </div>
 
+            <div className={styles.heroTags}>
+              <span className={styles.heroTag}>Quick search</span>
+              <span className={styles.heroTag}>Playlist preview</span>
+              <span className={styles.heroTag}>Mobile ready</span>
+            </div>
           </div>
 
-          <div className={styles.heroVisual}>
-            <div className={styles.heroPortrait}>
-              <div className={styles.heroRings} />
-              <div className={styles.heroCore}>B</div>
-              <div className={styles.heroWave} />
+          <div className={styles.heroPanel}>
+            <div
+              className={styles.heroArtwork}
+              style={heroArtwork ? ({ "--hero-artwork": `url(${heroArtwork})` } as CSSProperties) : undefined}
+              data-has-image={heroArtwork ? "true" : "false"}
+            >
+              <div className={styles.heroPanelCard}>
+                <span className={styles.overlayLabel}>Featured lane</span>
+                <strong>{leadPlaylist?.name ?? "Jump into the public catalog"}</strong>
+                <p>
+                  {leadPlaylist
+                    ? "Open a playlist, then keep moving through tracks without losing the flow."
+                    : "Preview tracks now, then login only when you want to save and keep listening."}
+                </p>
+              </div>
             </div>
 
-            <div className={styles.heroOverlayCard}>
-              <span className={styles.overlayLabel}>Preview mode</span>
-              <strong>{leadPlaylist?.name ?? "Featured discovery"}</strong>
-              <p>
-                {leadPlaylist
-                  ? "Open a playlist or start with a single track."
-                  : "Browse first, then sign in when you want more."}
-              </p>
-            </div>
+            {heroTracks.length ? (
+              <div className={styles.heroQueue}>
+                {heroTracks.map((track) => (
+                  <button
+                    key={track.id}
+                    type="button"
+                    className={styles.heroTrackRow}
+                    onClick={() => {
+                      void authorizeGuestTrack(track);
+                    }}
+                  >
+                    {track.cover_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img className={styles.heroTrackMedia} src={track.cover_url} alt={track.title} />
+                    ) : (
+                      <div className={styles.heroTrackFallback}>{track.title.slice(0, 1)}</div>
+                    )}
+                    <div className={styles.heroTrackCopy}>
+                      <strong>{track.title}</strong>
+                      <span>{track.artist_display}</span>
+                    </div>
+                    <span className={styles.heroTrackMeta}>{formatDuration(track.duration_seconds)}</span>
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
         </div>
 
@@ -389,7 +424,7 @@ export function PublicGuestExperience({
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="Search songs, artists, or playlists"
-            aria-label="Search songs or playlists"
+            aria-label="Search songs, artists, or playlists"
             autoComplete="off"
             spellCheck={false}
           />
@@ -455,6 +490,7 @@ export function PublicGuestExperience({
             <div className={styles.sectionHeader}>
               <div>
                 <h2 className={styles.sectionTitle}>Browse</h2>
+                <p className={styles.sectionMeta}>Start with a lane, then move straight into tracks.</p>
               </div>
             </div>
 
@@ -525,7 +561,8 @@ export function PublicGuestExperience({
                   <section className={styles.section}>
                     <div className={styles.sectionHeader}>
                       <div>
-                        <h2 className={styles.sectionTitle}>Top songs</h2>
+                        <h2 className={styles.sectionTitle}>Popular right now</h2>
+                        <p className={styles.sectionMeta}>Fast picks from the tracks listeners are opening first.</p>
                       </div>
                     </div>
                     <div className={styles.trackGrid}>
@@ -546,6 +583,7 @@ export function PublicGuestExperience({
                     <div className={styles.sectionHeader}>
                       <div>
                         <h2 className={styles.sectionTitle}>Playlists</h2>
+                        <p className={styles.sectionMeta}>Open a ready-made route when you want less scrolling.</p>
                       </div>
                     </div>
                     <div className={styles.playlistGrid}>
@@ -557,7 +595,6 @@ export function PublicGuestExperience({
                 </>
               ) : null}
             </div>
-
           </section>
         </>
       )}
