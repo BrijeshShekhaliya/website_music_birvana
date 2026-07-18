@@ -1,5 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import {
+  isMobileAuthRequest,
+  serializeMobileSession,
+} from "@/lib/auth/mobile-session";
 import { ensureProfileForUser } from "@/lib/auth/profile";
 import {
   getPendingSignupCookieName,
@@ -33,9 +37,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Authentication is not available right now." }, { status: 500 });
   }
 
-  const { token } = (await request.json().catch(() => ({}))) as {
+  const body = (await request.json().catch(() => ({}))) as {
+    pendingSignupToken?: string;
     token?: string;
   };
+  const mobileClient = isMobileAuthRequest(request);
+  const { token } = body;
 
   const normalizedToken = token?.replace(/\s+/gu, "");
 
@@ -43,7 +50,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Enter the OTP to continue." }, { status: 400 });
   }
 
-  const pendingSignup = readPendingSignup(request.cookies.get(getPendingSignupCookieName())?.value);
+  const pendingSignup = readPendingSignup(
+    body.pendingSignupToken ??
+      request.cookies.get(getPendingSignupCookieName())?.value,
+  );
 
   if (!pendingSignup) {
     return NextResponse.json(
@@ -109,7 +119,7 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  const { error: signInError } = await supabase.auth.signInWithPassword({
+  const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
     email: pendingSignup.email,
     password: pendingSignup.password,
   });
@@ -121,6 +131,13 @@ export async function POST(request: NextRequest) {
       { error: "Your email is verified, but we could not sign you in automatically." },
       400,
     );
+  }
+
+  if (mobileClient) {
+    return NextResponse.json({
+      ok: true,
+      session: serializeMobileSession(signInData.session),
+    });
   }
 
   return response;

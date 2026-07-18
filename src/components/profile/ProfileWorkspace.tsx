@@ -112,6 +112,11 @@ export function ProfileWorkspace({
               <span>Artists</span>
               <small>Browse artist pages.</small>
             </Link>
+            <a href="https://pub-c356460231d64956950b327b6efadbbf.r2.dev/Birvana%20aaplication/Birvana.apk" download>
+              <Heart size={18} />
+              <span>Download App</span>
+              <small>Get Birvana for Android.</small>
+            </a>
           </div>
         </section>
 

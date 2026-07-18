@@ -247,6 +247,11 @@ export function DiscoverWorkspace({
             </button>
           ) : null}
         </label>
+        <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
+          <a href="https://pub-c356460231d64956950b327b6efadbbf.r2.dev/Birvana%20aaplication/Birvana.apk" download className={styles.textButton} style={{ backgroundColor: 'var(--birvana-surface-hover)', padding: '6px 12px', borderRadius: '20px', fontSize: '13px', fontWeight: '500', textDecoration: 'none' }}>
+            Download App
+          </a>
+        </div>
       </section>
 
       {searching ? (

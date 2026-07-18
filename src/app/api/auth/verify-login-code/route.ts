@@ -1,5 +1,9 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { createServerClient } from "@supabase/ssr";
+import {
+  isMobileAuthRequest,
+  serializeMobileSession,
+} from "@/lib/auth/mobile-session";
 import { ensureProfileForUser } from "@/lib/auth/profile";
 import { getPublicSupabaseEnv, hasSmtpEnv, hasSupabaseEnv } from "@/lib/env";
 
@@ -20,6 +24,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Enter your email and the verification code." }, { status: 400 });
   }
 
+  const mobileClient = isMobileAuthRequest(request);
   const response = NextResponse.json({ ok: true });
   const { url, anonKey } = getPublicSupabaseEnv();
 
@@ -36,7 +41,7 @@ export async function POST(request: NextRequest) {
     },
   });
 
-  const { error } = await supabase.auth.verifyOtp({
+  const { data, error } = await supabase.auth.verifyOtp({
     email: normalizedEmail,
     token: normalizedToken,
     type: "email",
@@ -56,6 +61,13 @@ export async function POST(request: NextRequest) {
     } catch (profileError) {
       console.error("Unable to initialize profile after OTP sign-in", profileError);
     }
+  }
+
+  if (mobileClient) {
+    return NextResponse.json({
+      ok: true,
+      session: serializeMobileSession(data.session),
+    });
   }
 
   return response;

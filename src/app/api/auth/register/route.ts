@@ -1,4 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
+import { isMobileAuthRequest } from "@/lib/auth/mobile-session";
 import { sendOtpEmail } from "@/lib/email";
 import {
   getPendingSignupCookieName,
@@ -50,6 +51,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "Authentication is not available right now." }, { status: 500 });
   }
 
+  const mobileClient = isMobileAuthRequest(request);
   const { displayName, email, password, heardAbout } = (await request.json().catch(() => ({}))) as RegisterRequestBody;
 
   const trimmedDisplayName = displayName?.trim();
@@ -110,13 +112,18 @@ export async function POST(request: NextRequest) {
   const response = NextResponse.json({
     ok: true,
     email: normalizedEmail,
+    ...(mobileClient
+      ? { pendingSignupToken: pendingSignup.cookieValue }
+      : {}),
   });
 
-  response.cookies.set(
-    getPendingSignupCookieName(),
-    pendingSignup.cookieValue,
-    getPendingSignupCookieOptions(pendingSignup.maxAge),
-  );
+  if (!mobileClient) {
+    response.cookies.set(
+      getPendingSignupCookieName(),
+      pendingSignup.cookieValue,
+      getPendingSignupCookieOptions(pendingSignup.maxAge),
+    );
+  }
 
   return response;
 }
